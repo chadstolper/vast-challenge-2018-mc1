@@ -3,10 +3,10 @@
     <app-header></app-header>
     <div class="container-fluid">
       <div class="row">
-        <div class="col-lg-1">
+        <div class="col-md-1">
           <app-list :contains="'Kasios'" :items="kasiosFileNames"></app-list>
         </div>
-        <div class="col-lg-2">
+        <div class="col-md-2">
           <app-list :contains="'Species'" :items="speciesNames"></app-list>
         </div>
         <app-heatmap></app-heatmap>
@@ -65,7 +65,9 @@
         }
       },
       dataNest: function() {
-        if(this.allBirds) {
+        if(!this.allBirds) {
+          return []
+        }
           this.allBirds.forEach(function (d) {
             d.Day = d.Date.slice(3, 6);
             d.Month = d.Date.slice(0, 2);
@@ -74,7 +76,7 @@
             d.Y = +d.Y;
             d.Species = d.English_name;
           })
-        }
+        
         //Nest data first by species, then by year (asc.)
         var nestedData = d3.nest(this.allBirds)
           .key(function (d) {
@@ -84,6 +86,7 @@
             return d.Year
           }).sortKeys(d3.ascending)
           .entries(this.allBirds)
+        
 
         console.log(nestedData);
         return nestedData;
@@ -98,7 +101,7 @@
       kasiosFileNames: function() {
         var fileNames = [];
         for(var i = 1; i < 16; i++) {
-          fileNames.push(i);
+          fileNames.push("" + i);
         }
         return fileNames;
       }
