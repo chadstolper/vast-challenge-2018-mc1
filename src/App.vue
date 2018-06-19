@@ -64,6 +64,7 @@
       },
       dataNest: function() {
         if(this.allBirds) {
+          let birds = [];
           this.allBirds.forEach(function (d) {
             console.log("poopity scoop");
             d.Day = d.Date.slice(3, 6);
@@ -74,19 +75,19 @@
             d.Species = d.English_name;
           })
           console.log(this.allBirds);
-        return null;
         }
-        // Nest data first by species, then by year (asc.)
-        // var nestedData = d3.nest(this.allBirds)
-        //   .key(function (d) {
-        //     return d.Species
-        //   })
-        //   .key(function (d) {
-        //     return d.Year
-        //   }).sortKeys(d3.ascending)
-        //   .entries(this.allBirds)
-        // console.log(nestedData);
-        // return nestedData;
+        //Nest data first by species, then by year (asc.)
+        var nestedData = d3.nest(this.allBirds)
+          .key(function (d) {
+            return d.Species
+          })
+          .key(function (d) {
+            return d.Year
+          }).sortKeys(d3.ascending)
+          .entries(this.allBirds)
+
+        console.log(nestedData);
+        return nestedData;
       }
     }
   }
