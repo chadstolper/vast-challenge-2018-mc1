@@ -10,7 +10,9 @@
 </template>
 
 <script>
-//TODO: .active and .disabled
+  import { kasiosEventBus } from '../main';
+  import { speciesEventBus } from '../main';
+
 //TODO: percentages should be badges (badge badge-primary badge-pill)
 export default {
   name: 'ListItem',
@@ -28,8 +30,10 @@ export default {
   },
   methods: {
     selectItem() {
-      //TODO: can handle applying class for styling?
-      this.$emit('itemWasSelected', this);
+      if(this.isA === "Kasios")
+        kasiosEventBus.$emit('itemWasSelected', this);
+      else if(this.isA === "Species")
+        speciesEventBus.$emit('itemWasSelected', this);
     }
   },
   watch: {

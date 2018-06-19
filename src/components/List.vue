@@ -6,16 +6,29 @@
           :value="item"
           :selectedItemInList="selectedItem"
           :isA="contains"
-          @itemWasSelected="selectedItem = $event.value"
     ></app-list-item>
+    <!-- @itemWasSelected="selectedItem = $event.value" -->
   </ul>
 </template>
 
 <script>
   import ListItem from './ListItem.vue'
+  import { kasiosEventBus } from '../main';
+  import { speciesEventBus } from '../main';
 
   export default {
     name: 'List',
+    created() {
+      if(this.contains === "Kasios") {
+        kasiosEventBus.$on('itemWasSelected', (item) => {
+          this.selectedItem = item.value;
+        });
+      } else if(this.contains === "Species") {
+        speciesEventBus.$on('itemWasSelected', (item) => {
+          this.selectedItem = item.value;
+        });
+      }
+    },
     props: {
       contains: String,
       items: Array,
@@ -24,6 +37,8 @@
       return {
         selectedItem: null
       }
+    },
+    methods: {
     },
     components: {
       'app-list-item' : ListItem

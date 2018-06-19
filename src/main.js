@@ -1,10 +1,10 @@
 import Vue from 'vue'
 import App from './App.vue'
 
-Vue.config.productionTip = false
+export const kasiosEventBus = new Vue();
+export const speciesEventBus = new Vue();
 
-export const HeatEventBus = new Vue();
-export const AudioEventBus = new Vue();
+Vue.config.productionTip = false;
 
 new Vue({
   render: h => h(App)

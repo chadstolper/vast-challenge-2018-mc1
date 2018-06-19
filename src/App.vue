@@ -46,8 +46,6 @@
     mounted: async function() {
       this.allBirds = await d3.csv("/data/AllBirdsv4-refined.csv");
       this.testBirds = await d3.csv("/data/test-birds-location.csv");
-      console.log(this.allBirds);
-      console.log(this.testBirds);
     }, 
     computed: {
       kasiosLocations: function() { // TODO: make these a data object
@@ -60,7 +58,6 @@
             let location = [d.Y, d.X]; // LatLng format (y, x) for Leaflet markers
             locations.push(location);
           })
-          console.log(locations);
           return locations;
         }
       },
@@ -87,8 +84,6 @@
           }).sortKeys(d3.ascending)
           .entries(this.allBirds)
         
-
-        console.log(nestedData);
         return nestedData;
       },
       speciesNames: function() {
