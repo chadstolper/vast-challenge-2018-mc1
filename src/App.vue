@@ -3,10 +3,12 @@
     <app-header></app-header>
     <div class="container-fluid">
       <div class="row">
-        <p v-for="(location, i) in kasiosLocations" :key="i">{{location[0]}},{{location[1]}}</p>
-        <app-list-kasios>
-        </app-list-kasios>
-        <app-list-species></app-list-species>
+        <div class="col-lg-1">
+          <app-list :contains="'Kasios'" :items="kasiosFileNames"></app-list>
+        </div>
+        <div class="col-lg-2">
+          <app-list :contains="'Species'" :items="speciesNames"></app-list>
+        </div>
         <app-heatmap></app-heatmap>
         <div class="col-lg-4">
           <app-audio></app-audio>
@@ -19,8 +21,7 @@
 
 <script>
   import Header from './components/Header.vue';
-  import ListKasios from './components/ListKasios.vue'
-  import ListSpecies from './components/ListSpecies.vue'
+  import List from './components/List.vue'
   import Heatmap from './components/Heatmap.vue'
   import Audio from './components/Audio.vue'
 
@@ -31,8 +32,7 @@
     name: 'app',
     components: {
       'app-header': Header,
-      'app-list-kasios': ListKasios,
-      'app-list-species': ListSpecies,
+      'app-list': List,
       'app-heatmap' : Heatmap,
       'app-audio' : Audio
     }, 
@@ -46,6 +46,8 @@
     mounted: async function() {
       this.allBirds = await d3.csv("/data/AllBirdsv4-refined.csv");
       this.testBirds = await d3.csv("/data/test-birds-location.csv");
+      console.log(this.allBirds);
+      console.log(this.testBirds);
     }, 
     computed: {
       kasiosLocations: function() { // TODO: make these a data object
@@ -64,9 +66,7 @@
       },
       dataNest: function() {
         if(this.allBirds) {
-          let birds = [];
           this.allBirds.forEach(function (d) {
-            console.log("poopity scoop");
             d.Day = d.Date.slice(3, 6);
             d.Month = d.Date.slice(0, 2);
             d.Year = d.Date.slice(6);
@@ -74,7 +74,6 @@
             d.Y = +d.Y;
             d.Species = d.English_name;
           })
-          console.log(this.allBirds);
         }
         //Nest data first by species, then by year (asc.)
         var nestedData = d3.nest(this.allBirds)
@@ -88,6 +87,20 @@
 
         console.log(nestedData);
         return nestedData;
+      },
+      speciesNames: function() {
+        var speciesNames = []
+        this.dataNest.forEach(function (d) {
+          speciesNames.push(d.key);
+        })
+        return speciesNames;
+      },
+      kasiosFileNames: function() {
+        var fileNames = [];
+        for(var i = 1; i < 16; i++) {
+          fileNames.push(i);
+        }
+        return fileNames;
       }
     }
   }

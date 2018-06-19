@@ -1,10 +1,17 @@
 <template>
-
+  <li class="list-group-item" 
+      :key="index"
+      style="cursor: pointer">
+      {{ value }}
+  </li>
 </template>
 
 <script>
 export default {
-  name: 'ListItem'
+  name: 'ListItem',
+  props: {
+    value: String
+  }
 }
 </script>
 
