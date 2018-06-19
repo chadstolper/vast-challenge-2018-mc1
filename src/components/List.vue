@@ -4,7 +4,9 @@
     <app-list-item v-for="(item, i) in items" 
           :key="i" 
           :value="item"
-          @itemWasSelected="selectedItem = $event"
+          :selectedItemInList="selectedItem"
+          :isA="contains"
+          @itemWasSelected="selectedItem = $event.value"
     ></app-list-item>
   </ul>
 </template>
@@ -20,14 +22,7 @@
     },
     data: function() {
       return {
-        selectedItem: String
-      }
-    },
-    methods: {
-    },
-    watch: {
-      selectedItem: function() {
-        this.$emit('updateSelection', this.selectedItem);
+        selectedItem: null
       }
     },
     components: {

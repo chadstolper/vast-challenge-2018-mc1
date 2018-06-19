@@ -1,13 +1,13 @@
 <template>
   <li class="list-group-item" 
       style="cursor: pointer"
-      @click="selectItem"
-      @updateSelection="isSelected($event)">
+      :class="{
+        selected: selected
+        }"
+      @click="selectItem">
       {{ value }}
   </li>
 </template>
-
-
 
 <script>
 //TODO: .active and .disabled
@@ -15,7 +15,9 @@
 export default {
   name: 'ListItem',
   props: {
-    value: String
+    value: String,
+    selectedItemInList: null,
+    isA: String
   },
   data: function() {
     return {
@@ -27,16 +29,18 @@ export default {
   methods: {
     selectItem() {
       //TODO: can handle applying class for styling?
-      this.$emit('itemWasSelected', this.value);
-    },
-    isSelected(selectedValue) {
-      console.log("isSelected" + selectedValue)
-      if(this.value == selectedValue) {
+      this.$emit('itemWasSelected', this);
+    }
+  },
+  watch: {
+    selectedItemInList: function() {
+      if (this.selectedItemInList === this.value){
         this.selected = true;
-      } else {
+      }
+      else{
         this.selected = false;
       }
-    }
+    },
   }
 }
 </script>
@@ -46,5 +50,9 @@ export default {
   .list-group-item {
     padding: 3px 1px 3px 0px;
     text-align: left;
+  }
+  .selected{
+    background-color: whitesmoke;
+    transition: 0.5s;
   }
 </style>
