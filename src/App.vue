@@ -13,8 +13,8 @@
           <app-map-container :kasiosLocations="kasiosLocations" :dataNest="dataNest"></app-map-container>
         </div>
         <div class="col-lg-4">
-          <app-audio></app-audio>
-          <app-audio></app-audio>
+          <app-audio-container :contains="'Kasios'"></app-audio-container>
+          <!-- <app-audio-container :contains="'Species'"></app-audio-container> -->
         </div>
       </div>
     </div>
@@ -25,7 +25,7 @@
   import Header from './components/Header.vue';
   import List from './components/List.vue'
   import MapContainer from './components/MapContainer.vue'
-  import Audio from './components/Audio.vue'
+  import AudioContainer from './components/AudioContainer.vue'
 
   // Import D3
   import * as d3 from 'd3'
@@ -36,7 +36,7 @@
       'app-header': Header,
       'app-list': List,
       'app-map-container' : MapContainer,
-      'app-audio' : Audio
+      'app-audio-container' : AudioContainer
     }, 
     data: function () {
         return {
