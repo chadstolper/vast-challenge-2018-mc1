@@ -1,7 +1,7 @@
 <template>
     <div id="mapContainer">
       <app-map :kasiosLocation="kasiosLocation"></app-map>
-      <app-map-controls></app-map-controls>
+      <app-map-controls :selectedSpecies="selectedSpecies" :availableYears="availableYears" id="controls"></app-map-controls>
     </div>
 </template>
 
@@ -21,7 +21,9 @@
       return {
         selectedKasios: '',
         selectedSpecies: '',
-        kasiosLocation: null
+        kasiosLocation: null,
+        speciesData: null,
+        availableYears: []
       }
     },
     created() {
@@ -47,6 +49,18 @@
     watch: {
       selectedKasios: function() {
         this.kasiosLocation = this.kasiosLocations[parseInt(this.selectedKasios) - 1];
+      },
+      selectedSpecies: function() {
+        var index = this.dataNest.findIndex(species => species.key === this.selectedSpecies);
+        this.speciesData = this.dataNest[index];
+      },
+      speciesData: function() {
+        var years = [];
+        this.speciesData.values.forEach(function(year) {
+          if(year.key != "00")
+            years.push(year.key);
+        });
+        this.availableYears = years;
       }
     }
   }
@@ -57,5 +71,10 @@
   #mapContainer {
     width: 100%;
     height: 100%;
+  }
+  #controls {
+    /* display: inline-block;
+    position:relative;
+    top: 30px; */
   }
 </style>
