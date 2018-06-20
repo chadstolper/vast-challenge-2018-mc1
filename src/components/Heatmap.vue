@@ -1,24 +1,50 @@
 <template>
-  <div class="col-lg-5" id="actual">
-    <div id="map">HELLO</div>
-  </div>
+    <div id="map"></div>
 </template>
 
 <script>
-export default {
-  name: 'Heatmap'
+  import { kasiosEventBus } from '../main';
+  import { speciesEventBus } from '../main';
+  import 'leaflet';
+  import * as heat from 'leaflet.heat';
+
+  const L = window.L;
+
+  export default {
+    name: 'Heatmap',
+    data() {
+      return {
+        map: [],
+        markers: null
+      }
+    },
+    mounted() {
+      // Craete map object (no tiles)
+      const map = L.map('map', {
+        crs: L.CRS.Simple
+      });
+
+      // Create and fit bounds (background image is initally 200x200 pixels)
+      let bounds = [
+        [0, 0],
+        [400, 400]
+      ];
+      map.fitBounds(bounds);
+
+      // Add Lekugal Natural Reserve map as image overlay
+      L.imageOverlay('/data/Lekagul-Roadways-2018.bmp', bounds).addTo(map);
+
+      this.map = map;
 }
+  }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
   #map {
     margin: auto;
-    width: 100%;
+    width: 400px;
+    height: 400px;
     background-color:plum;
-  }
-  #actual {
-    background-color: pink;
-    /* height: 100vh; */
   }
 </style>
