@@ -19,7 +19,8 @@
   export default {
     name: 'Map',
     props: {
-      kasiosLocation: Object
+      kasiosLocation: Object,
+      heatmapData: Array
     },
     data() {
       return {
