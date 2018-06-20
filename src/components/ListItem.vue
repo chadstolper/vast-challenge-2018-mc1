@@ -30,10 +30,20 @@ export default {
   },
   methods: {
     selectItem() {
-      if(this.isA === "Kasios")
-        kasiosEventBus.$emit('itemWasSelected', this);
-      else if(this.isA === "Species")
-        speciesEventBus.$emit('itemWasSelected', this);
+      // If not already selected send appropriate event to parent List
+      if (this.selected == false){
+        if(this.isA === "Kasios")
+          kasiosEventBus.$emit('itemWasSelected', this);
+        else if(this.isA === "Species")
+          speciesEventBus.$emit('itemWasSelected', this);
+      }
+      // If this Item is already selected send Deselect event to parent List
+      else {
+        if(this.isA === "Kasios")
+          kasiosEventBus.$emit('itemWasDeselected');
+        else if(this.isA === "Species")
+          speciesEventBus.$emit('itemWasDeselected');
+      }
     }
   },
   watch: {

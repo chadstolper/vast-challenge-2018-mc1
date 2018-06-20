@@ -19,13 +19,21 @@
   export default {
     name: 'List',
     created() {
+      // Setup event listeners for selecting ListItems within kasios and species lists
       if(this.contains === "Kasios") {
         kasiosEventBus.$on('itemWasSelected', (item) => {
           this.selectedItem = item.value;
         });
+        // Send deselect value to all children ListItems
+        kasiosEventBus.$on('itemWasDeselected', () => {
+          this.selectedItem = null;
+        });
       } else if(this.contains === "Species") {
         speciesEventBus.$on('itemWasSelected', (item) => {
           this.selectedItem = item.value;
+        });
+        speciesEventBus.$on('itemWasDeselected', () => {
+          this.selectedItem = null;
         });
       }
     },
