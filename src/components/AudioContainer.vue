@@ -1,6 +1,6 @@
 <template>
   <div class="container-fluid" id="AudioContainer">
-      {{ contains }}
+      <h3>{{ contains }} Audio Analyzer</h3>
       <AudioPlayer :audioFile="selectedAudioFile"
       :baseDirectory="baseAudioDirectory"></AudioPlayer>
   </div>
