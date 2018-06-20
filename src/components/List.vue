@@ -26,14 +26,14 @@
         });
         // Send deselect value to all children ListItems
         kasiosEventBus.$on('itemWasDeselected', () => {
-          this.selectedItem = null;
+          this.selectedItem = '';
         });
       } else if(this.contains === "Species") {
         speciesEventBus.$on('itemWasSelected', (item) => {
           this.selectedItem = item.value;
         });
         speciesEventBus.$on('itemWasDeselected', () => {
-          this.selectedItem = null;
+          this.selectedItem = '';
         });
       }
     },
@@ -43,7 +43,7 @@
     },
     data: function() {
       return {
-        selectedItem: null
+        selectedItem: ''
       }
     },
     methods: {

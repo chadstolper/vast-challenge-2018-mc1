@@ -9,7 +9,9 @@
         <div class="col-md-2">
           <app-list :contains="'Species'" :items="speciesNames"></app-list>
         </div>
-        <app-heatmap></app-heatmap>
+        <div class="col-md-5">
+          <app-map-container :kasiosLocations="kasiosLocations" :dataNest="dataNest"></app-map-container>
+        </div>
         <div class="col-lg-4">
           <app-audio></app-audio>
           <app-audio></app-audio>
@@ -22,7 +24,7 @@
 <script>
   import Header from './components/Header.vue';
   import List from './components/List.vue'
-  import Heatmap from './components/Heatmap.vue'
+  import MapContainer from './components/MapContainer.vue'
   import Audio from './components/Audio.vue'
 
   // Import D3
@@ -33,7 +35,7 @@
     components: {
       'app-header': Header,
       'app-list': List,
-      'app-heatmap' : Heatmap,
+      'app-map-container' : MapContainer,
       'app-audio' : Audio
     }, 
     data: function () {
@@ -48,14 +50,16 @@
       this.testBirds = await d3.csv("/data/test-birds-location.csv");
     }, 
     computed: {
-      kasiosLocations: function() { // TODO: make these a data object
+      kasiosLocations: function() {
         if(this.testBirds) {
           let locations = [];
           this.testBirds.forEach(function (d) {
-            d.ID = +d.ID;
+            // Format data correctly (String -> int)
             d.X = +d.X;
             d.Y = +d.Y;
-            let location = [d.Y, d.X]; // LatLng format (y, x) for Leaflet markers
+            // Create object for rendering markers and push to locations array
+            let location = { name: d.ID, latlng: [(d.Y * 2.5) - 250, (d.X * 2.5) - 250],
+                             x: d.X, y: d.Y };
             locations.push(location);
           })
           return locations;
@@ -105,6 +109,14 @@
 </script>
 
 <style>
+  @import "../node_modules/leaflet/dist/leaflet.css";
+  .leaflet-fake-icon-image-2x {
+    background-image: url(../node_modules/leaflet/dist/images/marker-icon-2x.png);
+  }
+  .leaflet-fake-icon-shadow {
+    background-image: url(../node_modules/leaflet/dist/images/marker-shadow.png);
+  }
+
   #app {
     font-family: 'Avenir', Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
