@@ -4,7 +4,7 @@
       <div id="waveform">
         <p v-if="audioFile==null">Please select an audio file</p>
       </div>
-      <div id="spectrogram">
+      <div id="spectrogram" v-show="showSpec">
         SPECTROGRAM TEST
       </div>
       <div class="btn-group">
@@ -20,7 +20,7 @@
         <button type="button" class="btn btn-disabled">
           {{currentTime}} / {{audioLength}}
         </button>
-        <button type="button" class="btn btn-default">
+        <button type="button" class="btn btn-default" @click="showSpec = !showSpec">
           Waveform / Spectrogram toggle
         </button>
       </div>
@@ -31,6 +31,7 @@
 
 <script>
   import * as WaveSurfer from 'wavesurfer';
+  import 'wavesurfer/dist/plugin/wavesurfer.spectrogram.min.js';
 
   export default {
     name: 'Audio',
@@ -43,6 +44,7 @@
         playPauseSymbol: 'media-play',
         audioLength: '00:00',
         currentTime: '00:00',
+        showSpec: true,
       }
     },
     watch: {
@@ -54,6 +56,13 @@
         var vmWave = this;
         this.waveSurferInstance.on('audioprocess', function () {
           vmWave.updateTime();
+        });
+        this.waveSurferInstance.on('ready', function () {
+          var spectrogram = Object.create(WaveSurfer.Spectrogram);
+          spectrogram.init({
+            wavesurfer: vmWave.waveSurferInstance,
+            container: "#spectrogram",
+          });
         });
       },
     },
