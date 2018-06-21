@@ -9,6 +9,7 @@
   </nav> -->
   <div class="container-fluid" id="header">
     <div class="col-lg-12">
+      <img src="/data/logo.png"/>
       <h3 style="text-align:left; display: inline-block">Audio Explorer</h3>
       <h6 style="float:right; padding: 8px 0 0 0; display: inline-block">Created by Colin Scruggs and Cameron Henkel</h6>
     </div>
@@ -31,5 +32,12 @@
     -moz-box-shadow: 0px 6px 31px -1px rgba(204,204,204,0.33);
     box-shadow: 0px 6px 31px -1px rgba(204,204,204,0.33); */
     z-index: 9000;
+  }
+  img {
+    position: relative;
+    height:45px;
+    margin-right: 7px;
+    bottom: 5px;
+    padding: 5px;
   }
 </style>
