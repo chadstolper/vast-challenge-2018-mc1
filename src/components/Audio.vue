@@ -4,6 +4,9 @@
       <div id="waveform">
         <p v-if="audioFile==null">Please select an audio file</p>
       </div>
+      <div id="spectrogram">
+        SPECTROGRAM TEST
+      </div>
       <div class="btn-group">
         <button type="button" class="btn btn-default" @click="skipBack">
           <img src="/data/icons/media-skip-backward.svg" alt="Back">
@@ -15,9 +18,9 @@
           <img src="/data/icons/media-skip-forward.svg" alt="Forward">
         </button>
         <button type="button" class="btn btn-disabled">
-          {{currentTimeStamp() }} / {{audioLength}}
+          {{currentTime}} / {{audioLength}}
         </button>
-        <button type="button" class="btn">
+        <button type="button" class="btn btn-default">
           Waveform / Spectrogram toggle
         </button>
       </div>
@@ -38,38 +41,34 @@
     data: function(){
       return{
         playPauseSymbol: 'media-play',
-        audioLength: '00',
+        audioLength: '00:00',
+        currentTime: '00:00',
       }
     },
     watch: {
-      audioFile: function() {
+      audioFile() {
+        this.currentTime = '00:00';
+        this.audioLength = '00:00';
         this.playPauseSymbol = 'media-play'
         this.waveSurferInstance.load(this.baseDirectory + this.audioFile + '.mp3');
-        this.audioLength = Math.round(this.waveSurferInstance.getDuration());
-      }
+        var vmWave = this;
+        this.waveSurferInstance.on('audioprocess', function () {
+          vmWave.updateTime();
+        });
+      },
     },
-    computed: {
-      
-    },
-    mounted () {
+    created () {
       this.$nextTick(() => {
         this.waveSurferInstance = WaveSurfer.create({
           container: '#waveform',
           scrollParent: true,
+          normalize: true,
           waveColor: 'grey',
           progressColor: 'black',
         })
       })
     },
     methods: {
-      currentTimeStamp: function() {
-        if (this.audioFile!==null) {
-          return Math.round(this.waveSurferInstance.getCurrentTime());
-        }
-        else{
-          return 0;
-        }
-      },
       play () {
         this.waveSurferInstance.playPause()
         if(this.waveSurferInstance.isPlaying()==false){
@@ -84,7 +83,13 @@
       },
       skipForward () {
         this.waveSurferInstance.skipForward()
-      }
+      },
+      updateTime () {
+        this.currentTime = new Date(Math.round(
+          this.waveSurferInstance.getCurrentTime()) * 1000).toISOString().substr(14, 5);
+        this.audioLength = new Date(Math.round(
+          this.waveSurferInstance.getDuration()) * 1000).toISOString().substr(14, 5);
+      },
     }
   }
 </script>
