@@ -1,15 +1,15 @@
 <template>
   <div id="controls">
     <h5 v-if="selectedSpecies === ''">Please select a species</h5>
-    <h5 v-else-if="showRange === 'range'">Years displayed: {{ rangeSlider.value[0] }}-{{ rangeSlider.value[1] }}</h5>
+    <h5 v-else-if="toggleText === 'point'">Years displayed: {{ rangeSlider.value[0] }}-{{ rangeSlider.value[1] }}</h5>
     <h5 v-else>Year displayed: {{ pointSlider.value }}</h5>
     <button type="button" class="btn btn-light"
             @click="toggleSlider"
             id="toggle"
-            :class="{disabled : selectedSpecies === ''}">Toggle {{ showRange }} 
+            :class="{disabled : selectedSpecies === ''}">Toggle {{ toggleText }} 
     </button>
     <vue-slider ref="rangeSlider" 
-                v-if="showRange === 'range'" 
+                v-if="toggleText === 'point'" 
                 v-bind="rangeSlider" 
                 v-model="rangeSlider.value"
     ></vue-slider>
@@ -22,6 +22,7 @@
 
 <script>
   import vueSlider from 'vue-slider-component';
+  import { speciesEventBus } from '../main';
 
   export default {
     name: 'MapControls',
@@ -65,35 +66,56 @@
             "margin-left" : "30px"
           }
         },
-        showRange: "range"
+        toggleText: "point"
       }
     },
     watch: {
-      selectedSpecies: function() {
-
+      selectedSpecies() {
+        // If species is selected, then enable sliders 
         if(this.selectedSpecies != '') {
-        this.rangeSlider.disabled = false;
-        this.pointSlider.disabled = false;
-        this.rangeSlider.data = this.availableYears;
-        this.pointSlider.data = this.availableYears;
-        this.rangeSlider.value = [this.availableYears[0], this.availableYears[this.availableYears.length - 1]];
-        } else {
+          // Enable sliders
+          this.rangeSlider.disabled = false;
+          this.pointSlider.disabled = false;
+          // Set their data to the appropriate available years from selected species
+          this.rangeSlider.data = this.availableYears;
+          this.pointSlider.data = this.availableYears;
+          // Reset the displayed data on the sliders
+          this.rangeSlider.value = [this.availableYears[0], this.availableYears[this.availableYears.length - 1]];
+          this.pointSlider.value = this.rangeSlider.value[0];
+        } else { // If species is deselected, disable sliders
           this.rangeSlider.disabled = true;
           this.pointSlider.disabled = true;
         }
+      },
+      selectedPoint() {
+        speciesEventBus.$emit('pointChanged', this.selectedPoint);
+      },
+      selectedRange() {
+        speciesEventBus.$emit('rangeChanged', this.selectedRange);
       }
     },
     methods: {
       toggleSlider() {
+        // If a species is selected
         if(this.selectedSpecies != '') {
-          if(this.showRange === "range") {
-            this.showRange = "point";
+          if(this.toggleText === "point") { // Switch contol to point
+            this.toggleText = "range";
             this.pointSlider.value = this.rangeSlider.value[0];
+            speciesEventBus.$emit('selectionToggled', 'point');
           }
-          else {
-            this.showRange = "range";
+          else { // Switch control to range
+            this.toggleText = "point";
+            speciesEventBus.$emit('selectionToggled', 'range');
           }
         }
+      }
+    },
+    computed: {
+      selectedPoint() {
+        return this.pointSlider.value;
+      },
+      selectedRange() {
+        return this.rangeSlider.value;
       }
     },
     components: {
