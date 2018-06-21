@@ -41,8 +41,7 @@
     data: function () {
         return {
           allBirds: null,
-          testBirds: null,
-          mapSizeMultiple: 1
+          testBirds: null
         };
     }, 
     mounted: async function() {

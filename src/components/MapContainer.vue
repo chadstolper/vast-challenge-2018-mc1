@@ -1,6 +1,6 @@
 <template>
     <div id="mapContainer">
-      <app-map :kasiosLocation="kasiosLocation"></app-map>
+      <app-map :kasiosLocation="kasiosLocation" :speciesData="speciesData" :availableYears="availableYears"></app-map>
       <app-map-controls :selectedSpecies="selectedSpecies" :availableYears="availableYears" id="controls"></app-map-controls>
     </div>
 </template>
