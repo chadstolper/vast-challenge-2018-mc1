@@ -1,0 +1,16 @@
+Model_Name,ID,model_Agreement,first_guess,first_confidence,second_guess,second_confidence,third_guess,third_confidence
+Jaron_LSTM_19_19.h5,1,7/7,Bent-beak Riffraff,0.94599998,Orange Pine Plover,0.021,Green-tipped Scarlet Pipit,0.017999999
+Jaron_LSTM_19_19.h5,2,4/7,Rose-crested Blue Pipit,0.90200001,Bombadil,0.081,Darkwing Sparrow,0.004
+Jaron_LSTM_19_19.h5,3,3/7,Bombadil,0.998000026,Rose-crested Blue Pipit,0.002,Broad-winged Jojo,0
+Jaron_LSTM_19_19.h5,4,6/7,Bombadil,0.998000026,Orange Pine Plover,0.001,Qax,0
+IDK,5,0/7,Purple Tooting Tout,0.01,Qax,0.01,Pinkfinch,0.01
+Jaron_LSTM_19_19.h5,6,7/7,Green-tipped Scarlet Pipit,0.998000026,Purple Tooting Tout,0.002,Bent-beak Riffraff,0
+IDK,7,0/7,Purple Tooting Tout,0.01,Qax,0.01,Pinkfinch,0.01
+Jaron_LSTM_19_19.h5,8,7/7,Lesser Birchbeere,1,Scrawny Jay,0,Rose-crested Blue Pipit,0
+GRU_19_19.h5,9,6/7,Rose-crested Blue Pipit,0.953000009,Queenscoat,0.043000001,Darkwing Sparrow,0.002
+Jaron_LSTM_19_19.h5,10,7/7,Orange Pine Plover,0.922999978,Vermillion Trillian,0.072999999,Qax,0.001
+GRU_512_512_512.h5,11,5/7,Bent-beak Riffraff,0.958999991,Green-tipped Scarlet Pipit,0.039000001,Purple Tooting Tout,0.001
+Jaron_LSTM_19_19.h5,12,7/7,Orange Pine Plover,0.998000026,Vermillion Trillian,0.001,Purple Tooting Tout,0.001
+Jaron_LSTM_19_19.h5,13,6/7,Rose-crested Blue Pipit,0.876999974,Purple Tooting Tout,0.082999997,Eastern Corn Skeet,0.023
+IDK,14,0/7,Purple Tooting Tout,0.01,Qax,0.01,Pinkfinch,0.01
+GRU_all,15,1/7,Bent-beak Riffraff,0.537999988,Orange Pine Plover,0.439000011,Darkwing Sparrow,0.015

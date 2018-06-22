@@ -1,11 +1,15 @@
 <template>
   <li class="list-group-item" 
       style="cursor: pointer"
-      :class="{
-        selected: selected
-        }"
+      :class="[{selected: selected}, {kasios: isA==='Kasios'},
+      {faded: isA==='Species' && !isPrediction && kasiosSelected}]"
+
       @click="selectItem">
       {{ value }}
+      <transition name="fade">
+      <span v-if="isPrediction" class="badge badge-pill badge-dark"
+            :style="{'background-color' : bgColor}">{{ predictionValue }}</span>
+      </transition>
   </li>
 </template>
 
@@ -13,8 +17,7 @@
   import { kasiosEventBus } from '../main';
   import { speciesEventBus } from '../main';
 
-//TODO: percentages should be badges (badge badge-primary badge-pill)
-export default {
+  export default {
   name: 'ListItem',
   props: {
     value: String,
@@ -24,26 +27,58 @@ export default {
   data: function() {
     return {
       selected: false,
-      isPredition: false,
-      predictionValue: 0
+      isPrediction: false,
+      predictionValue: 0,
+      bgColor: '',
+      kasiosSelected: false
     }
   },
   methods: {
     selectItem() {
       // If not already selected send appropriate event to parent List
       if (this.selected == false){
-        if(this.isA === "Kasios")
+        if(this.isA === "Kasios") {
           kasiosEventBus.$emit('itemWasSelected', this);
+        }
         else if(this.isA === "Species")
           speciesEventBus.$emit('itemWasSelected', this);
       }
       // If this Item is already selected send Deselect event to parent List
       else {
-        if(this.isA === "Kasios")
+        if(this.isA === "Kasios") {
           kasiosEventBus.$emit('itemWasDeselected');
+        }
         else if(this.isA === "Species")
           speciesEventBus.$emit('itemWasDeselected');
       }
+    },
+    predictionColor(value) {
+      var gradient = [
+      [
+        0,
+        [51,51,102]
+      ],
+      [
+        100,
+        [204,51,51]
+      ]
+      ]
+      var firstcolor = gradient[0][1];
+      var secondcolor = gradient[1][1];
+      console.log(value);
+      this.bgColor = 'rgb('+this.pickHexValue(secondcolor,firstcolor,value).join()+')';
+    },
+    pickHexValue(color1, color2, weight) {
+      var p = weight;
+      var w = p * 2 - 1;
+      var w1 = (w/1+1) / 2;
+      var w2 = 1 - w1;
+      console.log(color1[0])
+      var rgb = [Math.round(color1[0] * w1 + color2[0] * w2),
+      Math.round(color1[1] * w1 + color2[1] * w2),
+      Math.round(color1[2] * w1 + color2[2] * w2)];
+      console.log(rgb);
+    return rgb;
     }
   },
   watch: {
@@ -54,7 +89,38 @@ export default {
       else{
         this.selected = false;
       }
-    },
+    }
+  },
+  created() {
+    kasiosEventBus.$on('itemWasDeselected', () => {
+      if(this.isPrediction) {
+        this.isPrediction = false;
+        this.predictionValue = 0;
+      }
+      this.kasiosSelected = false;
+    });
+    speciesEventBus.$on('highlightPredictions', (prediction) => {
+      if(this.isA === "Species") {
+        this.kasiosSelected = true;
+        if(this.isPrediction) {
+          this.isPrediction = false;
+          this.predictionValue = 0;
+        }
+        if(this.value === prediction.first_guess) {
+          this.isPrediction = true;
+          this.predictionValue = prediction.first_confidence;
+          this.predictionColor(prediction.first);
+        } else if(this.value === prediction.second_guess) {
+          this.isPrediction = true;
+          this.predictionValue = prediction.second_confidence;
+          this.predictionColor(prediction.second);
+        } else if(this.value === prediction.third_guess) {
+          this.isPrediction = true;
+          this.predictionValue = prediction.third_confidence;
+          this.predictionColor(prediction.third);
+        } 
+      }
+    })
   }
 }
 </script>
@@ -64,9 +130,21 @@ export default {
   .list-group-item {
     padding: 3px 1px 3px 0px;
     text-align: left;
+    transition: 1s;
   }
-  .selected{
+  .kasios {
+    text-align: center;
+  }
+  .faded {
+    opacity: 0.6;
+  }
+  .selected {
     background-color: whitesmoke;
-    transition: 0.5s;
+  }
+  .fade-enter-active, .fade-leave-active {
+    transition: opacity .5s;
+  }
+  .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+    opacity: 0;
   }
 </style>

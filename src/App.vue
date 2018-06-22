@@ -13,8 +13,8 @@
           <app-map-container :kasiosLocations="kasiosLocations" :dataNest="dataNest"></app-map-container>
         </div>
         <div class="col-lg-4">
-          <app-audio-container :contains="'Kasios'"></app-audio-container>
-          <!-- <app-audio-container :contains="'Species'"></app-audio-container> -->
+          <!-- <app-audio-container :contains="'Kasios'"></app-audio-container>
+          <app-audio-container :contains="'Species'"></app-audio-container> -->
         </div>
       </div>
     </div>
@@ -26,6 +26,8 @@
   import List from './components/List.vue'
   import MapContainer from './components/MapContainer.vue'
   import AudioContainer from './components/AudioContainer.vue'
+  import { kasiosEventBus } from './main';
+  import { speciesEventBus } from './main';
 
   // Import D3
   import * as d3 from 'd3'
@@ -41,15 +43,17 @@
     data: function () {
         return {
           allBirds: null,
-          testBirds: null
+          testBirds: null,
+          rawPredictions: null
         };
     }, 
     mounted: async function() {
       this.allBirds = await d3.csv("/data/AllBirdsv4-refined.csv");
       this.testBirds = await d3.csv("/data/test-birds-location.csv");
+      this.rawPredictions = await d3.csv("/data/aggregate_predictions.csv")
     }, 
     computed: {
-      kasiosLocations: function() {
+      kasiosLocations() {
         if(this.testBirds) {
           let locations = [];
           this.testBirds.forEach(function (d) {
@@ -64,20 +68,20 @@
           return locations;
         }
       },
-      dataNest: function() {
+      dataNest() {
         if(!this.allBirds) {
           return []
         }
-          this.allBirds.forEach(function (d) {
-            d.Day = d.Date.slice(3, 6);
-            d.Month = d.Date.slice(0, 2);
-            d.Year = d.Date.slice(6);
-            d.X = +d.X;
-            d.Y = +d.Y;
-            d.Species = d.English_name;
-          })
-        
-        //Nest data first by species, then by year (asc.)
+        // Format data from csv
+        this.allBirds.forEach(function (d) {
+          d.Day = d.Date.slice(3, 6);
+          d.Month = d.Date.slice(0, 2);
+          d.Year = d.Date.slice(6);
+          d.X = +d.X;
+          d.Y = +d.Y;
+          d.Species = d.English_name;
+        })
+        // Nest data first by species, then by year (asc.)
         var nestedData = d3.nest(this.allBirds)
           .key(function (d) {
             return d.Species
@@ -89,20 +93,48 @@
         
         return nestedData;
       },
-      speciesNames: function() {
+      speciesNames() {
         var speciesNames = []
         this.dataNest.forEach(function (d) {
           speciesNames.push(d.key);
         })
         return speciesNames;
       },
-      kasiosFileNames: function() {
+      kasiosFileNames() {
         var fileNames = [];
         for(var i = 1; i < 16; i++) {
           fileNames.push("" + i);
         }
         return fileNames;
+      },
+      predictions() {
+        if(!this.rawPredictions) {
+          return []
+        }
+        // Format the prediction percentages
+        this.rawPredictions.forEach(function (d) {
+          d.first = +d.first_confidence;
+          d.second = +d.second_confidence;
+          d.third = +d.third_confidence;
+          d.first_confidence = Math.round(d.first_confidence * 100) + "%";
+          d.second_confidence = Math.round(d.second_confidence * 100) + "%";
+          d.third_confidence = Math.round(d.third_confidence * 100) + "%";
+          d.first
+        })
+
+        var nestedPredictions = d3.nest(this.rawPredictions) 
+          .key(function (d) {
+            return d.ID
+          }).entries(this.rawPredictions)
+
+        return nestedPredictions;
       }
+    },
+    created() {
+      kasiosEventBus.$on('itemWasSelected', (item) => {
+        var index = this.predictions.findIndex(file => file.key === item.value);
+        speciesEventBus.$emit('highlightPredictions', this.predictions[index].values[0]);
+      });
     }
   }
 </script>

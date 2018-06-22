@@ -60,4 +60,7 @@
     font-size: 20px;
     text-align: left;
   }
+  li {
+    white-space: nowrap;
+  }
 </style>
