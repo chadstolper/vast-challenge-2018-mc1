@@ -13,8 +13,8 @@
           <app-map-container :kasiosLocations="kasiosLocations" :dataNest="dataNest"></app-map-container>
         </div>
         <div class="col-lg-4">
-          <!-- <app-audio-container :contains="'Kasios'"></app-audio-container>
-          <app-audio-container :contains="'Species'"></app-audio-container> -->
+          <app-audio-container :contains="'Kasios'"></app-audio-container>
+          <app-audio-container :contains="'Species'"></app-audio-container>
         </div>
       </div>
     </div>

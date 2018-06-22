@@ -1,7 +1,7 @@
 <template>
   <div id="audio">
     <div v-show="audioFile!==null">
-      <div :id="containsWaveform" v-show="!showSpec">
+      <div :id="containsWaveform">
         <p v-if="audioFile==null">Please select an audio file</p>
       </div>
       <div :id="containsSpectrogram" v-show="showSpec">
