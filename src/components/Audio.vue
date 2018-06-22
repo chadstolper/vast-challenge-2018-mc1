@@ -1,10 +1,10 @@
 <template>
   <div id="audio">
     <div v-show="audioFile!==null">
-      <div id="waveform">
+      <div :id="containsWaveform">
         <p v-if="audioFile==null">Please select an audio file</p>
       </div>
-      <div id="spectrogram" v-show="showSpec">
+      <div :id="containsSpectrogram" v-show="showSpec">
         SPECTROGRAM TEST
       </div>
       <div class="btn-group">
@@ -38,6 +38,7 @@
     props: {
       baseDirectory: String,
       audioFile: null,
+      contains: String,
     },
     data: function(){
       return{
@@ -46,6 +47,14 @@
         currentTime: '00:00',
         showSpec: true,
       }
+    },
+    computed: {
+      containsWaveform: function(){
+        return this.contains+"Waveform"
+      },
+      containsSpectrogram: function(){
+        return this.contains+"Spectrogram"
+      },
     },
     watch: {
       audioFile() {
@@ -61,7 +70,7 @@
           var spectrogram = Object.create(WaveSurfer.Spectrogram);
           spectrogram.init({
             wavesurfer: vmWave.waveSurferInstance,
-            container: "#spectrogram",
+            container: "#"+vmWave.containsSpectrogram,
           });
         });
       },
@@ -69,7 +78,7 @@
     created () {
       this.$nextTick(() => {
         this.waveSurferInstance = WaveSurfer.create({
-          container: '#waveform',
+          container: '#'+this.containsWaveform,
           scrollParent: true,
           normalize: true,
           waveColor: 'grey',
