@@ -1,11 +1,10 @@
 <template>
   <div id="audio">
     <div v-show="audioFile!==null">
-      <div id="waveform">
+      <div :id="containsWaveform" v-show="!showSpec">
         <p v-if="audioFile==null">Please select an audio file</p>
       </div>
-      <div id="spectrogram" v-show="showSpec">
-        SPECTROGRAM TEST
+      <div :id="containsSpectrogram" v-show="showSpec">
       </div>
       <div class="btn-group">
         <button type="button" class="btn btn-default" @click="skipBack">
@@ -38,14 +37,24 @@
     props: {
       baseDirectory: String,
       audioFile: null,
+      contains: String,
     },
     data: function(){
       return{
         playPauseSymbol: 'media-play',
         audioLength: '00:00',
         currentTime: '00:00',
-        showSpec: true,
+        showSpec: false,
+        waveSurferHeight: 128,
       }
+    },
+    computed: {
+      containsWaveform: function(){
+        return this.contains+"Waveform"
+      },
+      containsSpectrogram: function(){
+        return this.contains+"Spectrogram"
+      },
     },
     watch: {
       audioFile() {
@@ -55,13 +64,19 @@
         this.waveSurferInstance.load(this.baseDirectory + this.audioFile + '.mp3');
         var vmWave = this;
         this.waveSurferInstance.on('audioprocess', function () {
-          vmWave.updateTime();
+          vmWave.currentTime = new Date(Math.round(
+            vmWave.waveSurferInstance.getCurrentTime()) * 1000).toISOString().substr(14, 5);
         });
         this.waveSurferInstance.on('ready', function () {
+          // Update total audio length when file is loaded
+          vmWave.audioLength = new Date(Math.round(
+            vmWave.waveSurferInstance.getDuration()) * 1000).toISOString().substr(14, 5);
+          // Generate spectrogram object when audio is loaded
           var spectrogram = Object.create(WaveSurfer.Spectrogram);
           spectrogram.init({
             wavesurfer: vmWave.waveSurferInstance,
-            container: "#spectrogram",
+            container: "#"+vmWave.containsSpectrogram,
+            fftSamples: vmWave.waveSurferHeight*2,
           });
         });
       },
@@ -69,9 +84,10 @@
     created () {
       this.$nextTick(() => {
         this.waveSurferInstance = WaveSurfer.create({
-          container: '#waveform',
+          container: '#'+this.containsWaveform,
           scrollParent: true,
           normalize: true,
+          height: this.waveSurferHeight,
           waveColor: 'grey',
           progressColor: 'black',
         })
@@ -93,12 +109,6 @@
       skipForward () {
         this.waveSurferInstance.skipForward()
       },
-      updateTime () {
-        this.currentTime = new Date(Math.round(
-          this.waveSurferInstance.getCurrentTime()) * 1000).toISOString().substr(14, 5);
-        this.audioLength = new Date(Math.round(
-          this.waveSurferInstance.getDuration()) * 1000).toISOString().substr(14, 5);
-      },
     }
   }
 </script>
@@ -107,7 +117,6 @@
 <style scoped>
   #audio {
     margin: auto;
-    /* height: 0; */
     width: 100%;
     background-color:whitesmoke;
   }

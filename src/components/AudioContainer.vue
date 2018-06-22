@@ -2,7 +2,8 @@
   <div class="container-fluid" id="AudioContainer">
       <h3>{{ contains }} Audio Analyzer</h3>
       <AudioPlayer :audioFile="selectedAudioFile"
-      :baseDirectory="baseAudioDirectory"></AudioPlayer>
+      :baseDirectory="baseAudioDirectory"
+      :contains="contains"></AudioPlayer>
   </div>
 </template>
 
@@ -26,7 +27,7 @@
           this.selectedAudioFile = null;
         });
       } else if(this.contains === "Species") {
-        this.baseAudioDirectory = '';
+        this.baseAudioDirectory = '/data/species-mp3/';
         speciesEventBus.$on('itemWasSelected', (item) => {
           this.selectedAudioFile = item.value;
         });
