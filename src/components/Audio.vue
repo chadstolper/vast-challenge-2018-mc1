@@ -4,7 +4,7 @@
       <div :id="containsWaveform">
         <p v-if="audioFile==null">Please select an audio file</p>
       </div>
-      <div :id="containsSpectrogram" v-show="showSpec">
+      <div :id="containsSpectrogram" class="spectrogram" v-show="showSpec">
       </div>
       <div class="btn-group">
         <button type="button" class="btn btn-default" @click="skipBack">
@@ -19,8 +19,8 @@
         <button type="button" class="btn btn-disabled">
           {{currentTime}} / {{audioLength}}
         </button>
-        <button type="button" class="btn btn-default" @click="showSpec = !showSpec">
-          Waveform / Spectrogram toggle
+        <button type="button" class="btn btn-default" @click="showSpectrogram">
+          {{waveSpecButton}}
         </button>
       </div>
     </div>
@@ -29,7 +29,7 @@
 </template>
 
 <script>
-  import * as WaveSurfer from 'wavesurfer';
+  import WaveSurfer from 'wavesurfer';
   import 'wavesurfer/dist/plugin/wavesurfer.spectrogram.min.js';
 
   export default {
@@ -46,6 +46,7 @@
         currentTime: '00:00',
         showSpec: false,
         waveSurferHeight: 128,
+        waveSpecButton: "Show Spectrogram",
       }
     },
     computed: {
@@ -58,6 +59,8 @@
     },
     watch: {
       audioFile() {
+        this.showSpec = false;
+        this.waveSpecButton = "Show Spectrogram";
         this.currentTime = '00:00';
         this.audioLength = '00:00';
         this.playPauseSymbol = 'media-play'
@@ -85,6 +88,7 @@
       this.$nextTick(() => {
         this.waveSurferInstance = WaveSurfer.create({
           container: '#'+this.containsWaveform,
+          pixelRatio: 1, // Helps render faster and makes sure spectrogram fills the same height
           scrollParent: true,
           normalize: true,
           height: this.waveSurferHeight,
@@ -109,6 +113,17 @@
       skipForward () {
         this.waveSurferInstance.skipForward()
       },
+      showSpectrogram () {
+        this.showSpec = !this.showSpec
+        if (this.showSpec==true){
+          this.waveSpecButton = "Show Waveform"
+          this.waveSurferInstance.drawer.clearWave()
+        }
+        else{
+          this.waveSpecButton = "Show Spectrogram"
+          this.waveSurferInstance.drawBuffer()
+        }
+      },
     }
   }
 </script>
@@ -119,5 +134,8 @@
     margin: auto;
     width: 100%;
     background-color:whitesmoke;
+  }
+  .spectrogram {
+    margin-top: -128px;
   }
 </style>
