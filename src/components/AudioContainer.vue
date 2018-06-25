@@ -55,7 +55,7 @@
 <style scoped>
   #AudioContainer {
     margin: auto;
-    /* height: 0; */
+    margin-top: 10px;
     width: 100%;
     background-color:whitesmoke;
   }
