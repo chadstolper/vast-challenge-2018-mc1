@@ -31,8 +31,12 @@
         currentControl: 'range',
         selectedPoint: '',
         selectedRange: [],
+        selectedHistory: [],
         heatmapData: [],
-        heatmap: null
+        historyData: [],
+        heatmap: null,
+        history: null,
+        showHistory: false
       }
     },
     components: {
@@ -52,61 +56,117 @@
       speciesEventBus.$on('rangeChanged', (range) => {
         this.selectedRange = range;
       });
+      speciesEventBus.$on('toggleHistory', (value) => {
+        this.showHistory = value;
+      });
+      speciesEventBus.$on('historyChanged', (range) => {
+        this.selectedHistory = range;
+      });
     },
     mounted() {
       let map = this.$refs.map.mapObject;
       map.setView([0, 0], 0);
-      let heatmap = L.heatLayer(this.$data.heatmapData, {
+
+      let history = L.heatLayer(this.$data.historyData, {
         minOpacity: 0.75,
         radius: 13,
-        maxZoom: 6
+        maxZoom: 6,
+        gradient: {
+          0: '#fafafa',
+          .75: '#808080',
+          1: '#7F221F'
+        }
+      }).addTo(map);
+      this.$data.history = history;
+
+      let heatmap = L.heatLayer(this.$data.heatmapData, {
+        minOpacity: 1,
+        radius: 13,
+        maxZoom: 6,
+        blur: 20
       }).addTo(map);
       this.$data.heatmap = heatmap;
     },
     watch: {
+      currentControl() {
+         // Redraw the heatmap whenever the current control (range vs point) is changed
+         this.redrawHeatmap(false);
+      },
       selectedRange() {
-        this.redrawHeatmap();
+        // Redraw the heatmap whenever the selected range changes
+        this.redrawHeatmap(false);
       },
       selectedPoint() {
-        this.redrawHeatmap();
+        // Redraw the heatmap whenever the selected point changes
+        this.redrawHeatmap(false);
+      },
+      selectedHistory() {
+        // If showHistory is true, redraw the heatmap when the range changes
+        if(this.showHistory)
+          this.redrawHeatmap(true);
+      },
+      showHistory() {
+        // Either draw the history heatmap or remove it's data when showHistory is toggled
+        if(this.showHistory) {
+          this.redrawHeatmap(true);
+        }
+        else {
+          this.historyData = [];
+          this.history.setLatLngs(this.historyData);
+        }
       },
       speciesData() {
+        // Resets heatmap when deselecting a species from the list
         if(typeof this.speciesData === "undefined")
           this.heatmapData = [];
           this.heatmap.setLatLngs(this.heatmapData);
-      },
-      currentControl() {
-         this.redrawHeatmap();
+          this.historyData = [];
+          this.history.setLatLngs(this.historyData);
       }
     },
     methods: {
-      redrawHeatmap() {
-        // Reset heatmapData
-        this.heatmapData = [];
-        if(this.currentControl === 'range') {
-          // Collect bounding indexes of species data based off of the selectedRange
-          let index1 = this.speciesData.values.findIndex(year => year.key === this.selectedRange[0]);
-          let index2 = this.speciesData.values.findIndex(year => year.key === this.selectedRange[1]);
-          // Loop through and add each year from selectedRange to heatmapData
-          for(var i = index1; i <= index2; i++) {
-            this.addYearToHeatmap(i);
+      redrawHeatmap(history) {
+        // Handles drawing the data for the history heatmap
+        if(history) {
+          this.historyData = [];
+          // Collect bounding indexes of species data based off of the selectedHistory
+          let index1 = this.speciesData.values.findIndex(year => year.key === this.selectedHistory[0]);
+          let index2 = this.speciesData.values.findIndex(year => year.key === this.selectedHistory[1]);
+          // Loop through and add each year from selectedRange to history heatmap
+          for(i = index1; i <= index2; i++) {
+            this.addYearToHeatmap(i, history);
           }
-        } else if(this.currentControl === 'point') {
-          let index = this.speciesData.values.findIndex(year => year.key === this.selectedPoint);
-          this.addYearToHeatmap(index);
-        }
-        // Redraw heatmap
-        this.heatmap.setLatLngs(this.heatmapData);
+          // Redraw history heatmap layer with newly modified historyData
+          this.history.setLatLngs(this.historyData);
+        } else { // Handles drawing the data for the regular heatmap
+          this.heatmapData = [];
+          if(this.currentControl === 'range') {
+            // Collect bounding indexes of species data based off of the selectedRange
+            let index1 = this.speciesData.values.findIndex(year => year.key === this.selectedRange[0]);
+            let index2 = this.speciesData.values.findIndex(year => year.key === this.selectedRange[1]);
+            // Loop through and add each year from selectedRange to heatmapData
+            for(var i = index1; i <= index2; i++) {
+              this.addYearToHeatmap(i);
+            }
+          } else if(this.currentControl === 'point') {
+            let index = this.speciesData.values.findIndex(year => year.key === this.selectedPoint);
+            this.addYearToHeatmap(index);
+          }
+          // Redraw heatmap/history heatmap
+            this.heatmap.setLatLngs(this.heatmapData);
+          }
       },
-      addYearToHeatmap(index) {
+      addYearToHeatmap(index, history) {
         var vm = this; // Needed because using 'this' in forEach refers to recording
         this.speciesData.values[index].values.forEach(function(recording) {
-          vm.heatmapData.push([(recording.Y * 2.5) - 250, (recording.X * 2.5) - 250]);
+          if(!history)
+            vm.heatmapData.push([(recording.Y * 2.5) - 250, (recording.X * 2.5) - 250]);
+          else
+            vm.historyData.push([(recording.Y * 2.5) - 250, (recording.X * 2.5) - 250]);
         });
       }
     }
   }
-
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
