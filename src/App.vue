@@ -1,20 +1,20 @@
 <template>
   <div id="app">
-    <app-header></app-header>
+    <app-header class="animate fadeInDown one"></app-header>
     <div class="container-fluid">
       <div class="row">
-        <div class="col-md-1">
+        <div class="col-md-1 animate fadeInUp one">
           <app-list :contains="'Kasios'" :items="kasiosFileNames"></app-list>
         </div>
-        <div class="col-md-2">
+        <div class="col-md-2 animate fadeInUp two">
           <app-list :contains="'Species'" :items="speciesNames"></app-list>
         </div>
-        <div class="col-md-5">
+        <div class="col-md-5 animate fadeInUp three">
           <app-map-container :kasiosLocations="kasiosLocations" :dataNest="dataNest"></app-map-container>
         </div>
         <div class="col-lg-4">
-          <app-audio-container :contains="'Kasios'"></app-audio-container>
-          <app-audio-container :contains="'Species'"></app-audio-container>
+          <app-audio-container :contains="'Kasios'" class="animate fadeInUp four"></app-audio-container>
+          <app-audio-container :contains="'Species'" class="animate fadeInUp five"></app-audio-container>
         </div>
       </div>
     </div>
@@ -154,5 +154,107 @@
     -moz-osx-font-smoothing: grayscale;
     color: #2c3e50;
     height: 100vh;
+  }
+
+  /*==== FADE IN UP ===*/
+  @-webkit-keyframes fadeInUp {
+    from {
+      opacity: 0;
+      -webkit-transform: translate3d(0, 10%, 0);
+      transform: translate3d(0, 10%, 0);
+    }
+  
+    to {
+      opacity: 1;
+      -webkit-transform: none;
+      transform: none;
+    }
+  }
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      -webkit-transform: translate3d(0, 10%, 0);
+      transform: translate3d(0, 10%, 0);
+    }
+ 
+    to {
+      opacity: 1;
+      -webkit-transform: none;
+      transform: none;
+    }
+  }
+  .fadeInUp {
+    -webkit-animation-name: fadeInUp;
+    animation-name: fadeInUp;
+  }
+  /*=== FADE IN DOWN ===*/
+  @-webkit-keyframes fadeInDown {
+    from {
+      opacity: 0;
+      -webkit-transform: translate3d(0, -100%, 0);
+      transform: translate3d(0, -100%, 0);
+    }
+  
+    to {
+      opacity: 1;
+      -webkit-transform: none;
+      transform: none;
+    }
+  }
+  @keyframes fadeInDown {
+    from {
+      opacity: 0;
+      -webkit-transform: translate3d(0, -100%, 0);
+      transform: translate3d(0, -100%, 0);
+    }
+  
+    to {
+      opacity: 1;
+      -webkit-transform: none;
+      transform: none;
+    }
+  }
+ 
+.fadeInDown {
+  -webkit-animation-name: fadeInDown;
+  animation-name: fadeInDown;
+}
+  /*=== Trigger  ===*/
+  .animate {
+    -webkit-animation-duration: 1s;
+    animation-duration: 1s;
+    -webkit-animation-fill-mode: both;
+    animation-fill-mode: both;
+  }
+  
+  /*=== Optional Delays, change values here  ===*/
+  .one {
+  -webkit-animation-delay: 0.4s;
+  -moz-animation-delay: 0.4s;
+  animation-delay: 0.4s;
+  }
+  
+  .two {
+  -webkit-animation-delay: 0.8s;
+  -moz-animation-delay: 0.8s;
+  animation-delay: 0.8s;
+  }
+  
+  .three {
+  -webkit-animation-delay: 1.2s;
+  -moz-animation-delay: 1.2s;
+  animation-delay: 1.2s;
+  }
+  
+  .four {
+  -webkit-animation-delay: 1.6s;
+  -moz-animation-delay: 1.6s;
+  animation-delay: 1.6s;
+  }
+
+  .five {
+  -webkit-animation-delay: 2s;
+  -moz-animation-delay: 2s;
+  animation-delay: 2s;
   }
 </style>
