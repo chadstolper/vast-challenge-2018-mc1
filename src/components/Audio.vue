@@ -70,7 +70,10 @@
         this.playPauseSymbol = 'media-play'
 
         // Load in and draw waveform
-        this.waveSurferInstance.load(this.baseDirectory + this.audioFile + '.mp3');
+        this.waveSurferInstance.load(
+          this.baseDirectory + this.audioFile + '.mp3',
+          [],
+          );
         
         // Passes Vue instance to callback functions
         var vmWave = this;
@@ -98,7 +101,7 @@
             wavesurfer: vmWave.waveSurferInstance,
             container: "#"+vmWave.containsSpectrogram,
             fftSamples: vmWave.waveSurferHeight*2,
-            // frequenciesDataUrl: "",
+            frequenciesDataUrl: "fakeurl",
           });
         });
       },
