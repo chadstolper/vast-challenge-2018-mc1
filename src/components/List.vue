@@ -28,6 +28,11 @@
         kasiosEventBus.$on('itemWasDeselected', () => {
           this.selectedItem = '';
         });
+        // Deselect item from Kasios list when view is changed
+        speciesEventBus.$on('viewChanged'), () => {
+            this.selectedItem = '';
+            kasiosEventBus.$emit('itemWasDeselected');
+        }
       } else if(this.contains === "Species") {
         speciesEventBus.$on('itemWasSelected', (item) => {
           this.selectedItem = item.value;

@@ -6,7 +6,7 @@
 
       @click="selectItem">
       {{ value }}
-      <transition name="fade">
+      <transition name="slide-fade">
       <span v-if="isPrediction" class="badge badge-pill badge-dark"
             :style="{'background-color' : bgColor}">{{ predictionValue }}</span>
       </transition>
@@ -111,12 +111,19 @@
           this.predictionColor(prediction.third);
         } 
       }
+    });
+    speciesEventBus.$on('viewChanged', () => {
+      if(this.isPrediction) {
+        this.isPrediction = false;
+        this.predictionValue = 0;
+      }
+      this.kasiosSelected = false;
+      speciesEventBus.$emit('itemWasSelected', this);
     })
   }
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
   .list-group-item {
     padding: 3px 1px 3px 0px;
@@ -136,6 +143,17 @@
     transition: opacity .5s;
   }
   .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+    opacity: 0;
+  }
+  .slide-fade-enter-active {
+    transition: all .3s ease;
+  }
+  .slide-fade-leave-active {
+    transition: all .3s ease;
+  }
+  .slide-fade-enter, .slide-fade-leave-to
+  /* .slide-fade-leave-active below version 2.1.8 */ {
+    transform: translateX(5px);
     opacity: 0;
   }
 </style>

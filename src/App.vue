@@ -1,21 +1,36 @@
 <template>
   <div id="app">
-    <app-header class="animate fadeInDown one"></app-header>
+    <transition name="fade-down" mode="out-in" appear>
+      <app-header class="" :current-view="currentView"></app-header>
+    </transition>
     <div class="container-fluid">
       <div class="row">
-        <div class="col-md-1 animate fadeInUp one">
-          <app-list :contains="'Kasios'" :items="kasiosFileNames"></app-list>
-        </div>
-        <div class="col-md-2 animate fadeInUp two">
-          <app-list :contains="'Species'" :items="speciesNames"></app-list>
-        </div>
-        <div class="col-md-5 animate fadeInUp three">
-          <app-map-container :kasiosLocations="kasiosLocations" :dataNest="dataNest"></app-map-container>
-        </div>
-        <div class="col-lg-4">
-          <app-audio-container :contains="'Kasios'" class="animate fadeInUp four"></app-audio-container>
-          <app-audio-container :contains="'Species'" class="animate fadeInUp five"></app-audio-container>
-        </div>
+        <transition name="fade-up" mode="out-in" appear>
+          <div class="col-md-1 " v-if="currentView === 'Main View'">
+            <app-list :contains="'Kasios'" :items="kasiosFileNames"></app-list>
+          </div>
+        </transition>
+        <transition name="fade-up" mode="out-in" appear>
+          <div class="col-md-2">
+            <app-list :contains="'Species'" :items="speciesNames"></app-list>
+          </div>
+        </transition>
+        <transition name="fade-up" mode="out-in" appear>
+          <div class="col-md-5" v-if="currentView === 'Main View'">
+            <app-map-container :kasiosLocations="kasiosLocations" :dataNest="dataNest"></app-map-container>
+          </div>
+        </transition>
+        <transition name="fade-up" mode="out-in" appear>
+          <div class="col-md-10" v-if="currentView === 'Month View'">
+            <app-month-container :monthNest="monthNest"></app-month-container>
+          </div>
+        </transition>
+        <transition name="fade-up" mode="out-in" appear>
+          <div class="col-lg-4" v-if="currentView === 'Main View'">
+            <app-audio-container :contains="'Kasios'" class=""></app-audio-container>
+            <app-audio-container :contains="'Species'" class=""></app-audio-container>
+          </div>
+        </transition>
       </div>
     </div>
   </div>
@@ -26,6 +41,7 @@
   import List from './components/List.vue'
   import MapContainer from './components/MapContainer.vue'
   import AudioContainer from './components/AudioContainer.vue'
+  import MonthContainer from './components/MonthContainer.vue'
   import { kasiosEventBus } from './main';
   import { speciesEventBus } from './main';
 
@@ -38,13 +54,15 @@
       'app-header': Header,
       'app-list': List,
       'app-map-container' : MapContainer,
-      'app-audio-container' : AudioContainer
+      'app-audio-container' : AudioContainer,
+      'app-month-container' : MonthContainer
     }, 
     data: function () {
         return {
           allBirds: null,
           testBirds: null,
-          rawPredictions: null
+          rawPredictions: null,
+          currentView: "Main View"
         };
     }, 
     mounted: async function() {
@@ -68,7 +86,9 @@
           return locations;
         }
       },
+      // Main data object (nested by year) used for primary heatmap
       dataNest() {
+        // Prevents null/undefined errors
         if(!this.allBirds) {
           return []
         }
@@ -93,6 +113,25 @@
         
         return nestedData;
       },
+      // Second data object (nested by month) used for monthly view
+      monthNest() {
+        // Prevents null/undefined errors
+        if(!this.allBirds) {
+          return []
+        }
+        // Nest data first by species, then by month (asc.)
+        var nestedData = d3.nest(this.allBirds)
+          .key(function (d) {
+            return d.Species
+          })
+          .key(function (d) {
+            return d.Month
+          }).sortKeys(d3.ascending)
+          .entries(this.allBirds)
+        
+        return nestedData;
+      },
+      // Array of all species names for species list
       speciesNames() {
         var speciesNames = []
         this.dataNest.forEach(function (d) {
@@ -100,6 +139,7 @@
         })
         return speciesNames;
       },
+      // Array of all Kasios Furniture file names for Kasios list
       kasiosFileNames() {
         var fileNames = [];
         for(var i = 1; i < 16; i++) {
@@ -108,6 +148,7 @@
         return fileNames;
       },
       predictions() {
+        // Prevents null/undefined errors
         if(!this.rawPredictions) {
           return []
         }
@@ -121,7 +162,7 @@
           d.third_confidence = Math.round(d.third_confidence * 100) + "%";
           d.first
         })
-
+        // Nest data based on ID
         var nestedPredictions = d3.nest(this.rawPredictions) 
           .key(function (d) {
             return d.ID
@@ -131,10 +172,27 @@
       }
     },
     created() {
+      // When an item is selected in the Kasios list, highlight the predictions in the Species list
       kasiosEventBus.$on('itemWasSelected', (item) => {
         var index = this.predictions.findIndex(file => file.key === item.value);
         speciesEventBus.$emit('highlightPredictions', this.predictions[index].values[0]);
       });
+
+      speciesEventBus.$on('viewChanged', (view) => {
+        this.currentView = view;
+
+      })
+    },
+    methods: {
+      toggleView() {
+        // If the Audio interface is currently displayed
+        if(this.currentView === "Audio") 
+          // toggle to the Month interface
+          this.currentView = "Month";
+        else // If the Month interface is currently displayed
+          // toggle to the Audio interface
+          this.currentView = "Audio";
+      }
     }
   }
 </script>
@@ -156,7 +214,23 @@
     height: 100vh;
   }
 
+  .fade-up-enter-active, .fade-up-leave-active {
+    transition: all 1s;
+  }
+  .fade-up-enter, .fade-up-leave-to /* .list-leave-active below version 2.1.8 */ {
+    opacity: 0;
+    transform: translate3d(0, 2%, 0);
+  }
+  .fade-down-enter-active, .fade-down-leave-active {
+    transition: all 0.7s;
+  }
+  .fade-down-enter, .fade-down-leave-to /* .list-leave-active below version 2.1.8 */ {
+    opacity: 0;
+    transform: translate3d(0, -100%, 0);
+  }
+
   /*==== FADE IN UP ===*/
+  /* thanks to https://fabriceleven.com/dev/quickly-add-css-fade-in-animations/ */
   @-webkit-keyframes fadeInUp {
     from {
       opacity: 0;
@@ -227,7 +301,7 @@
     animation-fill-mode: both;
   }
   
-  /*=== Optional Delays, change values here  ===*/
+  /*=== DELAYS ===*/
   .one {
   -webkit-animation-delay: 0.4s;
   -moz-animation-delay: 0.4s;
@@ -256,5 +330,13 @@
   -webkit-animation-delay: 2s;
   -moz-animation-delay: 2s;
   animation-delay: 2s;
+  }
+
+  .leaflet-bottom {
+    display: none;
+  }
+
+  .month .leaflet-left {
+    display: none;
   }
 </style>

@@ -72,9 +72,4 @@
     width: 100%;
     height: 100%;
   }
-  #controls {
-    /* display: inline-block;
-    position:relative;
-    top: 30px; */
-  }
 </style>
