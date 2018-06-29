@@ -137,6 +137,7 @@
     opacity: 0.6;
   }
   .selected {
+    /*background-color: rgba(33, 97, 140, 0.1);*/
     background-color: whitesmoke;
   }
   .fade-enter-active, .fade-leave-active {

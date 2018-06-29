@@ -1,35 +1,31 @@
 <template>
-  <!-- <transition name="fade-up" mode="out-in" appear> -->
-  <div id="monthMap">
-    <h6>{{ month.key }}</h6>
-    <l-map ref="map" :minZoom="minZoom" :crs="crs">
+  <div id="monthMap" :class="{faded : empty}">
+    <h6>{{ month.key }}<span style="font-size : 12px"> ({{ numRecords }} record<span v-if="numRecords != 1">s</span>)</span></h6>
+    <l-map ref="map" :minZoom="minZoom" :crs="crs" >
       <l-image-overlay :url="src" :bounds="bounds"></l-image-overlay>
     </l-map>
   </div>
-  <!-- </transition> -->
 </template>
 
 <script>
   import { LMap, LImageOverlay, LMarker, LLayerGroup } from 'vue2-leaflet';
-  import { speciesEventBus } from '../main';
   import 'leaflet.heat';
 
   export default {
     name: 'MonthMap',
     props: {
-      // monthData: Object,
-      // availableMonths: Array,
       month: Object
     },
     data() {
       return {
         src:'/data/Lekagul-Roadways-2018.bmp',
-        bounds: [[-75,-75], [75,75]],
+        bounds: [[-87,-87], [87,87]],
         minZoom: 0,
         // eslint-disable-next-line
         crs: L.CRS.Simple,
         heatmapData: [],
-        heatmap: null
+        heatmap: null,
+        numRecords: 0
       }
     },
     components: {
@@ -43,7 +39,7 @@
       let map = this.$refs.map.mapObject;
       map.setView([0, 0], 0);
 
-      // disable drag and zoom handlers
+      // Disable drag and zoom handlers
       map.dragging.disable();
       map.touchZoom.disable();
       map.doubleClickZoom.disable();
@@ -68,13 +64,6 @@
       this.$data.heatmap = heatmap;
 
       this.drawHeatmap();
-      // var vm = this; // Needed because using 'this' in forEach refers to recording
-      //   this.month.value.forEach(function(recording) {
-      //     console.log(recording);
-      //     vm.heatmapData.push([(recording.Y * 0.75) - 75, (recording.X * 0.75) - 75])
-      //   });
-      //   // Redraw heatmap/history heatmap
-      //   this.heatmap.setLatLngs(this.heatmapData);
     },
     watch: {
       // Resets entire map when deselecting a species from the list
@@ -88,38 +77,48 @@
        if(this.heatmapData != []) {
          this.heatmapData = [];
          this.heatmap.setLatLngs(this.heatmapData);
+         this.numRecords = 0;
        }
 
         if(this.month.value != null) {
         var vm = this; // Needed because using 'this' in forEach refers to recording
-        console.log(this.month.value);
+
+        // Extract each recording location from the given month of data
         this.month.value.values.forEach(function(recording) {
-          vm.heatmapData.push([(recording.Y * 0.75) - 75, (recording.X * 0.75) - 75])
+          vm.heatmapData.push([(recording.Y * 0.87) - 87, (recording.X * 0.87) - 87])
+          vm.numRecords++; // Increment numRecords
         });
         // Redraw heatmap/history heatmap
         this.heatmap.setLatLngs(this.heatmapData);
         }
       }
-      // addYearToHeatmap(index, history) {
-      //   var vm = this; // Needed because using 'this' in forEach refers to recording
-      //   this.sData.values[index].values.forEach(function(recording) {
-      //     if(!history) // Push data to regular heatmap
-      //       vm.heatmapData.push([(recording.Y * 2.5) - 250, (recording.X * 2.5) - 250]);
-      //     else // Or push data to history heatmap
-      //       vm.historyData.push([(recording.Y * 2.5) - 250, (recording.X * 2.5) - 250]);
-      //   });
-      // }
+    },
+    computed: {
+      // Used to dynamically apply the .faded CSS class on maps with 0 records
+      empty: function() {
+          if(this.numRecords === 0)
+            return true;
+          else 
+            return false;
+        }
     }
   }
 </script>
 
 <style scoped>
   #monthMap {
-    width: 150px;
-    height: 150px;
+    width: 174px;
+    height: 174px;
     margin: 5px 20px 5px 20px;
     position: relative;
     display: inline-block;
+    transition: 0.5s;
+    -moz-transition: 0.5s;
+  }
+  .faded {
+    opacity: 0.2;
+    transition: 0.5s;
+    -moz-transition: 0.5s;
   }
 
 </style>

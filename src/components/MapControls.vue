@@ -2,8 +2,12 @@
   <div id="controls">
     <!-- Text -->
     <h6 v-if="selectedSpecies === ''">Please select a species</h6>
-    <h6 v-else-if="toggleText === 'point'">Years displayed: {{ rangeSlider.value[0] }}-{{ rangeSlider.value[1] }}</h6>
-    <h6 v-else>Year displayed: {{ pointSlider.value }}</h6>
+    <h6 v-else-if="toggleText === 'point'">Years displayed: {{ rangeSlider.value[0] }}-{{ rangeSlider.value[1] }}
+          <span style="font-size : 12px"> ({{ numRecords }} record<span v-if="numRecords != 1">s</span>)</span>
+    </h6>
+    <h6 v-else>Year displayed: {{ pointSlider.value }}
+          <span style="font-size : 12px"> ({{ numRecords }} record<span v-if="numRecords != 1">s</span>)</span>
+    </h6>
     
     <!-- Buttons -->
     <div class="btn-group" role="group" id="toggle" aria-label="Controls">
@@ -30,7 +34,9 @@
 
     <!-- History text & slider -->
     <transition name="history" mode="out-in">
-        <h6 v-if="historyText === 'Hide'">Comparing with: {{ historySlider.value[0] }}-{{ historySlider.value[1] }}</h6>
+        <h6 v-if="historyText === 'Hide'">Comparing with: {{ historySlider.value[0] }}-{{ historySlider.value[1] }}
+              <span style="font-size : 12px"> ({{ numHistory }} record<span v-if="numHistory != 1">s</span>)</span>
+        </h6>
     </transition>
     <transition name="history" mode="out-in">
         <vue-slider ref="historySlider" class="slider"
@@ -127,7 +133,9 @@
           }
         },
         toggleText: "point",
-        historyText: "Show"
+        historyText: "Show",
+        numRecords: 0,
+        numHistory: 0
       }
     },
     watch: {
@@ -226,6 +234,14 @@
       selectedHistory() {
         return this.historySlider.value;
       }
+    },
+    created() {
+      speciesEventBus.$on('numberRecordsUpdated', (num) => {
+        this.numRecords = num;
+      });
+      speciesEventBus.$on('numberHistoryUpdated', (num) => {
+        this.numHistory = num;
+      });
     },
     components: {
       vueSlider

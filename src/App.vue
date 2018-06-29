@@ -1,42 +1,84 @@
 <template>
-  <div id="app">
-    <transition name="fade-down" mode="out-in" appear>
-      <app-header class="" :current-view="currentView"></app-header>
-    </transition>
-    <div class="container-fluid">
+  <!-- <div id="app">
+    <app-header class="" :current-view="currentView"></app-header>
+    <div class="container-fluid" id="components">
       <div class="row">
         <transition name="fade-up" mode="out-in" appear>
           <div class="col-md-1 " v-if="currentView === 'Main View'">
             <app-list :contains="'Kasios'" :items="kasiosFileNames"></app-list>
           </div>
         </transition>
+        <div class="col-md-2" id="speciesListContainer">
+          <transition name="fade-up" mode="out-in" appear>
+            <app-list :contains="'Species'" :items="speciesNames" ></app-list>
+          </transition>
+        </div>
+
         <transition name="fade-up" mode="out-in" appear>
-          <div class="col-md-2">
-            <app-list :contains="'Species'" :items="speciesNames"></app-list>
-          </div>
-        </transition>
-        <transition name="fade-up" mode="out-in" appear>
-          <div class="col-md-5" v-if="currentView === 'Main View'">
+          <div class="col-md-5" v-if="currentView === 'Main View'" style="z-index: 4">
             <app-map-container :kasiosLocations="kasiosLocations" :dataNest="dataNest"></app-map-container>
           </div>
         </transition>
-        <transition name="fade-up" mode="out-in" appear>
-          <div class="col-md-10" v-if="currentView === 'Month View'">
+        <transition name="fade-up">
+          <div class="col-md-10" v-if="currentView === 'Month View'" style="z-index: 4">
             <app-month-container :monthNest="monthNest"></app-month-container>
           </div>
         </transition>
         <transition name="fade-up" mode="out-in" appear>
-          <div class="col-lg-4" v-if="currentView === 'Main View'">
-            <app-audio-container :contains="'Kasios'" class=""></app-audio-container>
-            <app-audio-container :contains="'Species'" class=""></app-audio-container>
+          <div class="col-md-4" v-if="currentView === 'Main View'">
+            <app-audio-container :contains="'Kasios'"></app-audio-container>
+            <app-audio-container :contains="'Species'"></app-audio-container>
           </div>
         </transition>
       </div>
     </div>
-  </div>
+  </div>  -->
+
+  <div id="app">
+    <transition name="fade-down" appear>
+      <app-header class="" :current-view="currentView"></app-header>
+    </transition>
+
+    <div class="container-fluid" id="components">
+    <!-- Main View -->
+    <transition name="fade-up" mode="out-in" appear>
+      <div class="row" v-if="currentView === 'Main View'" :key="'main'">
+        <div class="col-md-1">
+            <app-list :contains="'Kasios'" :items="kasiosFileNames"></app-list>
+        </div>
+
+        <div class="col-md-2">
+            <app-list :contains="'Species'" :items="speciesNames" ></app-list>
+        </div>
+
+          <div class="col-md-5">
+            <app-map-container :kasiosLocations="kasiosLocations" :dataNest="dataNest"></app-map-container>
+          </div>
+
+          <div class="col-md-4">
+            <app-audio-container :contains="'Kasios'"></app-audio-container>
+            <app-audio-container :contains="'Species'"></app-audio-container>
+          </div>
+      </div>
+
+      <!-- Month View -->
+      <div class="row" v-if="currentView === 'Month View'" :key="'month'">
+        <div class="col-md-2">
+            <app-list :contains="'Species'" :items="speciesNames" ></app-list>
+        </div>
+
+        <div class="col-md-10">
+          <app-month-container :monthNest="monthNest"></app-month-container>
+        </div>
+      </div>
+    </transition>
+
+    </div>
+  </div> 
 </template>
 
 <script>
+  // Import components and both event busses
   import Header from './components/Header.vue';
   import List from './components/List.vue'
   import MapContainer from './components/MapContainer.vue'
@@ -66,14 +108,17 @@
         };
     }, 
     mounted: async function() {
+      // Extract data from CSVs using D3 and store them in data variables
       this.allBirds = await d3.csv("/data/AllBirdsv4-refined.csv");
       this.testBirds = await d3.csv("/data/test-birds-location.csv");
       this.rawPredictions = await d3.csv("/data/aggregate_predictions.csv")
     }, 
     computed: {
+      // Compute an array of kasios recording locations for the map to render markers with
       kasiosLocations() {
         if(this.testBirds) {
           let locations = [];
+          // For each entry in the test-birds-location.csv:
           this.testBirds.forEach(function (d) {
             // Format data correctly (String -> int)
             d.X = +d.X;
@@ -142,11 +187,12 @@
       // Array of all Kasios Furniture file names for Kasios list
       kasiosFileNames() {
         var fileNames = [];
-        for(var i = 1; i < 16; i++) {
+        for(var i = 1; i <= 15; i++) { // 15 file names, starting with 1
           fileNames.push("" + i);
         }
         return fileNames;
       },
+      // Load prediction data from csv
       predictions() {
         // Prevents null/undefined errors
         if(!this.rawPredictions) {
@@ -180,18 +226,16 @@
 
       speciesEventBus.$on('viewChanged', (view) => {
         this.currentView = view;
-
       })
     },
     methods: {
       toggleView() {
         // If the Audio interface is currently displayed
-        if(this.currentView === "Audio") 
-          // toggle to the Month interface
-          this.currentView = "Month";
+        if(this.currentView === "Audio")
+          this.currentView = "Month"; // toggle to the Month interface
+        
         else // If the Month interface is currently displayed
-          // toggle to the Audio interface
-          this.currentView = "Audio";
+          this.currentView = "Audio"; // toggle to the Audio interface
       }
     }
   }
@@ -200,10 +244,7 @@
 <style>
   @import "../node_modules/leaflet/dist/leaflet.css";
   .leaflet-fake-icon-image-2x {
-    background-image: url(../node_modules/leaflet/dist/images/marker-icon-2x.png);
-  }
-  .leaflet-fake-icon-shadow {
-    background-image: url(../node_modules/leaflet/dist/images/marker-shadow.png);
+    background-image: url(/data/icons/marker.png);
   }
 
   #app {
@@ -214,12 +255,23 @@
     height: 100vh;
   }
 
+  .leaflet-bottom {
+    display: none;
+  }
+
+  .month .leaflet-left {
+    display: none;
+  }
+
+  /*=== Leaflet transitions and css animations ===*/
+
   .fade-up-enter-active, .fade-up-leave-active {
     transition: all 1s;
+    animation-delay: 0s;
   }
   .fade-up-enter, .fade-up-leave-to /* .list-leave-active below version 2.1.8 */ {
     opacity: 0;
-    transform: translate3d(0, 2%, 0);
+    transform: translate3d(0, 15px, 0);
   }
   .fade-down-enter-active, .fade-down-leave-active {
     transition: all 0.7s;
@@ -227,116 +279,5 @@
   .fade-down-enter, .fade-down-leave-to /* .list-leave-active below version 2.1.8 */ {
     opacity: 0;
     transform: translate3d(0, -100%, 0);
-  }
-
-  /*==== FADE IN UP ===*/
-  /* thanks to https://fabriceleven.com/dev/quickly-add-css-fade-in-animations/ */
-  @-webkit-keyframes fadeInUp {
-    from {
-      opacity: 0;
-      -webkit-transform: translate3d(0, 10%, 0);
-      transform: translate3d(0, 10%, 0);
-    }
-  
-    to {
-      opacity: 1;
-      -webkit-transform: none;
-      transform: none;
-    }
-  }
-  @keyframes fadeInUp {
-    from {
-      opacity: 0;
-      -webkit-transform: translate3d(0, 10%, 0);
-      transform: translate3d(0, 10%, 0);
-    }
- 
-    to {
-      opacity: 1;
-      -webkit-transform: none;
-      transform: none;
-    }
-  }
-  .fadeInUp {
-    -webkit-animation-name: fadeInUp;
-    animation-name: fadeInUp;
-  }
-  /*=== FADE IN DOWN ===*/
-  @-webkit-keyframes fadeInDown {
-    from {
-      opacity: 0;
-      -webkit-transform: translate3d(0, -100%, 0);
-      transform: translate3d(0, -100%, 0);
-    }
-  
-    to {
-      opacity: 1;
-      -webkit-transform: none;
-      transform: none;
-    }
-  }
-  @keyframes fadeInDown {
-    from {
-      opacity: 0;
-      -webkit-transform: translate3d(0, -100%, 0);
-      transform: translate3d(0, -100%, 0);
-    }
-  
-    to {
-      opacity: 1;
-      -webkit-transform: none;
-      transform: none;
-    }
-  }
- 
-.fadeInDown {
-  -webkit-animation-name: fadeInDown;
-  animation-name: fadeInDown;
-}
-  /*=== Trigger  ===*/
-  .animate {
-    -webkit-animation-duration: 1s;
-    animation-duration: 1s;
-    -webkit-animation-fill-mode: both;
-    animation-fill-mode: both;
-  }
-  
-  /*=== DELAYS ===*/
-  .one {
-  -webkit-animation-delay: 0.4s;
-  -moz-animation-delay: 0.4s;
-  animation-delay: 0.4s;
-  }
-  
-  .two {
-  -webkit-animation-delay: 0.8s;
-  -moz-animation-delay: 0.8s;
-  animation-delay: 0.8s;
-  }
-  
-  .three {
-  -webkit-animation-delay: 1.2s;
-  -moz-animation-delay: 1.2s;
-  animation-delay: 1.2s;
-  }
-  
-  .four {
-  -webkit-animation-delay: 1.6s;
-  -moz-animation-delay: 1.6s;
-  animation-delay: 1.6s;
-  }
-
-  .five {
-  -webkit-animation-delay: 2s;
-  -moz-animation-delay: 2s;
-  animation-delay: 2s;
-  }
-
-  .leaflet-bottom {
-    display: none;
-  }
-
-  .month .leaflet-left {
-    display: none;
   }
 </style>

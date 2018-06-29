@@ -7,7 +7,6 @@
           :selectedItemInList="selectedItem"
           :isA="contains"
     ></app-list-item>
-    <!-- @itemWasSelected="selectedItem = $event.value" -->
   </ul>
 </template>
 
@@ -59,7 +58,6 @@
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
   #listTitle {
     font-size: 20px;
