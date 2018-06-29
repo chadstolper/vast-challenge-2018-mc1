@@ -3,8 +3,7 @@
     <div v-show="audioFile!==null">
       <div :id="containsWaveform">
       </div>
-      <div :id="containsSpectrogram" class="spectrogram" v-show="showSpec">
-      </div>
+
       <div class="btn-group">
         <button type="button" class="btn btn-default" @click="skipBack">
           <img src="/data/icons/media-skip-backward.svg" alt="Back">
@@ -29,7 +28,6 @@
 
 <script>
   import WaveSurfer from 'wavesurfer';
-  import 'wavesurfer/dist/plugin/wavesurfer.spectrogram.min.js';
 
   export default {
     name: 'Audio',
@@ -55,31 +53,28 @@
       containsWaveform: function(){
         return this.contains+"Waveform"
       },
-      containsSpectrogram: function(){
-        return this.contains+"Spectrogram"
-      },
     },
     watch: {
       // Update player when new audio file is selected
       audioFile() {
         // Reset default values
-        this.showSpec = false;
-        this.waveSpecButton = "Show Spectrogram";
-        this.currentTime = '00:00';
-        this.audioLength = '00:00';
+        this.showSpec = false
+        this.waveSpecButton = "Show Spectrogram"
+        this.currentTime = '00:00'
+        this.audioLength = '00:00'
         this.playPauseSymbol = 'media-play'
+
+        // Passes Vue instance to callback functions
+        var vmWave = this;
 
         // Load in and draw waveform
         this.waveSurferInstance.load(
           this.baseDirectory + this.audioFile + '.mp3',
-          [],
           );
         
-        // Passes Vue instance to callback functions
-        var vmWave = this;
-
         // When audio is playing set current time
         this.waveSurferInstance.on('audioprocess', function () {
+          vmWave.playPauseSymbol = 'media-pause'
           vmWave.currentTime = new Date(Math.round(
             vmWave.waveSurferInstance.getCurrentTime()) * 1000).toISOString().substr(14, 5);
         });
@@ -89,20 +84,11 @@
           vmWave.playPauseSymbol = 'media-play'
         });
 
-        // Spectrogram load and set total duration
+        // Set total duration
         this.waveSurferInstance.on('ready', function () {
           // Update total audio length when file is loaded
           vmWave.audioLength = new Date(Math.round(
             vmWave.waveSurferInstance.getDuration()) * 1000).toISOString().substr(14, 5);
-          // Generate spectrogram object when audio is loaded
-          var spectrogram = Object.create(WaveSurfer.Spectrogram);
-
-          spectrogram.init({
-            wavesurfer: vmWave.waveSurferInstance,
-            container: "#"+vmWave.containsSpectrogram,
-            fftSamples: vmWave.waveSurferHeight*2,
-            frequenciesDataUrl: "fakeurl",
-          });
         });
       },
     },
@@ -142,12 +128,21 @@
       // Toggles whether to show the spectrogram or the waveform
       showSpectrogram () {
         this.showSpec = !this.showSpec
+        var waveDivChildren = document.getElementById(this.containsWaveform).childNodes;
+        var waveElementChildren = waveDivChildren[0].childNodes;
+        var waveCanvas = waveElementChildren[1].getContext('2d');
         if (this.showSpec==true){
           this.waveSpecButton = "Show Waveform"
           this.waveSurferInstance.drawer.clearWave()
+          var img = new Image;
+          img.onload = function(){
+            waveCanvas.drawImage(img,0,0);
+          };
+          img.src = "/data/spectrograms/"+this.audioFile+'.png';
         }
         else{
           this.waveSpecButton = "Show Spectrogram"
+          this.waveSurferInstance.drawer.clearWave()
           this.waveSurferInstance.drawBuffer()
         }
       },
@@ -161,8 +156,5 @@
     margin: auto;
     width: 100%;
     background-color:whitesmoke;
-  }
-  .spectrogram {
-    margin-top: -128px; 
   }
 </style>
