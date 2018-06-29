@@ -17,7 +17,7 @@
         <button type="button" class="btn btn-disabled">
           {{currentTime}} / {{audioLength}}
         </button>
-        <button type="button" class="btn btn-default" @click="showSpectrogram">
+        <button type="button" class="btn btn-default w-100 text-right" @click="showSpectrogram">
           {{waveSpecButton}}
         </button>
       </div>
@@ -155,5 +155,9 @@
     margin: auto;
     width: 100%;
     background-color:whitesmoke;
+  }
+  .btn-group {
+    flex: 1;
+    display: flex;
   }
 </style>
