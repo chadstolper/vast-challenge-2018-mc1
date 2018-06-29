@@ -1,5 +1,5 @@
 <template>
-  <div class="container-fluid" id="AudioContainer">
+  <div class="container-fluid" id="AudioContainer" >
       <h5>{{ contains }} Audio: {{selectedAudioFile}}</h5>
       <AudioPlayer :audioFile="selectedAudioFile"
       :baseDirectory="baseAudioDirectory"
@@ -51,7 +51,6 @@
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
   #AudioContainer {
     margin: auto;

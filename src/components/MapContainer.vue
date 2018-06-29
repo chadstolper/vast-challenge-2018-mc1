@@ -50,31 +50,29 @@
       selectedKasios: function() {
         this.kasiosLocation = this.kasiosLocations[parseInt(this.selectedKasios) - 1];
       },
+      // When a species is selected, assign speciesData to its corresponding data from dataNest
       selectedSpecies: function() {
         var index = this.dataNest.findIndex(species => species.key === this.selectedSpecies);
         this.speciesData = this.dataNest[index];
       },
+      // When speciesData is updated, determine the available years of data
       speciesData: function() {
-        var years = [];
-        this.speciesData.values.forEach(function(year) {
-          if(year.key != "00")
-            years.push(year.key);
-        });
-        this.availableYears = years;
+        if(this.speciesData != undefined) {
+          var years = [];
+          this.speciesData.values.forEach(function(year) {
+            if(year.key != "00")
+              years.push(year.key);
+          });
+          this.availableYears = years;
+        }
       }
     }
   }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
   #mapContainer {
     width: 100%;
     height: 100%;
-  }
-  #controls {
-    /* display: inline-block;
-    position:relative;
-    top: 30px; */
   }
 </style>

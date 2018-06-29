@@ -1,20 +1,27 @@
 <template>
   <div id="controls">
+    <!-- Text -->
     <h6 v-if="selectedSpecies === ''">Please select a species</h6>
-    <h6 v-else-if="toggleText === 'point'">Years displayed: {{ rangeSlider.value[0] }}-{{ rangeSlider.value[1] }}</h6>
-    <h6 v-else>Year displayed: {{ pointSlider.value }}</h6>
+    <h6 v-else-if="toggleText === 'point'">Years displayed: {{ rangeSlider.value[0] }}-{{ rangeSlider.value[1] }}
+          <span style="font-size : 12px"> ({{ numRecords }} record<span v-if="numRecords != 1">s</span>)</span>
+    </h6>
+    <h6 v-else>Year displayed: {{ pointSlider.value }}
+          <span style="font-size : 12px"> ({{ numRecords }} record<span v-if="numRecords != 1">s</span>)</span>
+    </h6>
     
+    <!-- Buttons -->
     <div class="btn-group" role="group" id="toggle" aria-label="Controls">
-        <button type="button" class="btn btn-light"
+        <button type="button" class="btn btn-light btn-sm"
                 @click="toggleHistory"
                 :class="{disabled : selectedSpecies === ''}">{{ historyText }} history
         </button>
-        <button type="button" class="btn btn-light"
+        <button type="button" class="btn btn-light btn-sm"
                 @click="toggleSlider"
                 :class="{disabled : selectedSpecies === ''}">Toggle {{ toggleText }} 
         </button>
     </div>
 
+    <!-- Sliders -->
     <vue-slider ref="rangeSlider" class="slider"
                 v-if="toggleText === 'point'" 
                 v-bind="rangeSlider" 
@@ -24,12 +31,20 @@
                 v-else v-bind="pointSlider" 
                 v-model="pointSlider.value"
     ></vue-slider>
-    <h6 v-if="historyText === 'Hide'">Comparing with: {{ historySlider.value[0] }}-{{ historySlider.value[1] }}</h6>
-    <vue-slider ref="historySlider" class="slider"
-                v-if="historyText === 'Hide'" 
-                v-bind="historySlider" 
-                v-model="historySlider.value"
-    ></vue-slider>
+
+    <!-- History text & slider -->
+    <transition name="history" mode="out-in">
+        <h6 v-if="historyText === 'Hide'">Comparing with: {{ historySlider.value[0] }}-{{ historySlider.value[1] }}
+              <span style="font-size : 12px"> ({{ numHistory }} record<span v-if="numHistory != 1">s</span>)</span>
+        </h6>
+    </transition>
+    <transition name="history" mode="out-in">
+        <vue-slider ref="historySlider" class="slider"
+                    v-if="historyText === 'Hide'" 
+                    v-bind="historySlider" 
+                    v-model="historySlider.value"
+        ></vue-slider>
+    </transition>
   </div>
 </template>
 
@@ -45,6 +60,7 @@
     },
     data() {
       return {
+        // vueSlider data for primary range slider
         rangeSlider: {
           value: [],
           width: '90%',
@@ -68,6 +84,7 @@
             "borderColor": "#21618C"
           }
         },
+        // vueSlider data for primary point selector
         pointSlider: {
           value: [],
           width: '90%',
@@ -84,8 +101,13 @@
           },
           style: {
             "margin-left" : "30px"
+          },
+          tooltipStyle: {
+            "backgroundColor": "#21618C",
+            "borderColor": "#21618C"
           }
         },
+        // vueSlider data for history range slider
         historySlider: {
           value: [],
           width: '90%',
@@ -111,12 +133,14 @@
           }
         },
         toggleText: "point",
-        historyText: "Show"
+        historyText: "Show",
+        numRecords: 0,
+        numHistory: 0
       }
     },
     watch: {
       selectedSpecies() {
-        // If species is selected, then enable sliders 
+        // If species is selected, then:
         if(this.selectedSpecies != '') {
           // Enable sliders
           this.rangeSlider.disabled = false;
@@ -130,49 +154,72 @@
           this.rangeSlider.value = [this.availableYears[0], this.availableYears[this.availableYears.length - 1]];
           this.pointSlider.value = this.rangeSlider.value[0];
           this.historySlider.value = [this.availableYears[0], this.availableYears[this.availableYears.length - 1]];
-        } else { // If species is deselected, disable sliders
+        } else { // If species is deselected, then:
+          // Disable sliders
           this.rangeSlider.disabled = true;
           this.pointSlider.disabled = true;
           this.historySlider.disabled = true;
+          // Reset history range slider to not appear
           this.historyText = "Show";
           speciesEventBus.$emit('historyChanged', this.selectedHistory);
         }
       },
-      selectedPoint() {
-        speciesEventBus.$emit('pointChanged', this.selectedPoint);
-      },
+      // Slider range/point selection watchers: used to update data fed into heatmap(s)
       selectedRange() {
         speciesEventBus.$emit('rangeChanged', this.selectedRange);
       },
+      selectedPoint() {
+        speciesEventBus.$emit('pointChanged', this.selectedPoint);
+      },
       selectedHistory() {
         speciesEventBus.$emit('historyChanged', this.selectedHistory);
-      }
+      },
     },
     methods: {
+      // Triggered on clicking the "Toggle Range/Point" button
       toggleSlider() {
-        // If a species is selected
+        // If a species is selected:
         if(this.selectedSpecies != '') {
-          if(this.toggleText === "point") { // Switch contol to point
-            this.toggleText = "range";
+           // Switch contol to point selector and set its initial value
+          if(this.toggleText === "point") {
+            this.toggleText = "range"; // Switch toggleText of button to "range"
             this.pointSlider.value = this.rangeSlider.value[0];
+            // Emit event to indicate heatmap data should be modified to be a single year (point)
             speciesEventBus.$emit('selectionToggled', 'point');
           }
           else { // Switch control to range
             this.toggleText = "point";
+            // Emit event to indicate heatmap data should be modified to be a range of years
             speciesEventBus.$emit('selectionToggled', 'range');
           }
         }
       },
+      // Triggered on clicking the "Show/Hide History" button
       toggleHistory() {
         // If a species is selected
         if(this.selectedSpecies != '') {
-          if(this.historyText === "Show") { // Switch contol to point
+           // Enable history range slider
+          if(this.historyText === "Show") {
             this.historyText = "Hide";
+            // Emit event to indicate history heatmap should be drawn on the map
             speciesEventBus.$emit('toggleHistory', true);
+             // Switch contol to point selector and set its initial value
+            if(this.toggleText === "point") {
+              this.toggleText = "range"; // Switch toggleText of button to "range"
+              this.pointSlider.value = this.rangeSlider.value[0];
+              // Emit event to indicate heatmap data should be modified to be a single year (point)
+              speciesEventBus.$emit('selectionToggled', 'point');
+            }
           }
-          else { // Switch control to range
+          else { // Disable history range slider
             this.historyText = "Show";
+            // Emit event to indicate history heatmap should disappear 
             speciesEventBus.$emit('toggleHistory', false);
+            if(this.toggleText === "range") {
+              this.toggleText = "point";
+              // Emit event to indicate heatmap data should be modified to be a range of years
+              speciesEventBus.$emit('selectionToggled', 'range');
+            }
           }
         }
       }
@@ -188,13 +235,20 @@
         return this.historySlider.value;
       }
     },
+    created() {
+      speciesEventBus.$on('numberRecordsUpdated', (num) => {
+        this.numRecords = num;
+      });
+      speciesEventBus.$on('numberHistoryUpdated', (num) => {
+        this.numHistory = num;
+      });
+    },
     components: {
       vueSlider
     }
   }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
   #controls {
     margin: auto;
@@ -202,6 +256,7 @@
     top: 25px;
     background-color:whitesmoke;
     border-radius: 5px;
+    height: 125px;
   }
   h6 {
     padding: 10px 0 0 15px;
@@ -213,5 +268,18 @@
   }
   .slider {
     margin: 5px 0 0 0
+  }
+  .history-enter-active, .history-leave-active {
+    transition: all 0.8s;
+  }
+  .history-enter, .history-leave-to /* .list-leave-active below version 2.1.8 */ {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  .fade-enter-active, .fade-leave-active {
+    transition: opacity .5s;
+  }
+  .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+    opacity: 0;
   }
 </style>

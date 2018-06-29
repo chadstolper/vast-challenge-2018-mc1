@@ -7,7 +7,6 @@
           :selectedItemInList="selectedItem"
           :isA="contains"
     ></app-list-item>
-    <!-- @itemWasSelected="selectedItem = $event.value" -->
   </ul>
 </template>
 
@@ -28,6 +27,11 @@
         kasiosEventBus.$on('itemWasDeselected', () => {
           this.selectedItem = '';
         });
+        // Deselect item from Kasios list when view is changed
+        speciesEventBus.$on('viewChanged'), () => {
+            this.selectedItem = '';
+            kasiosEventBus.$emit('itemWasDeselected');
+        }
       } else if(this.contains === "Species") {
         speciesEventBus.$on('itemWasSelected', (item) => {
           this.selectedItem = item.value;
@@ -54,7 +58,6 @@
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
   #listTitle {
     font-size: 20px;
