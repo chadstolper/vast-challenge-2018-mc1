@@ -3,12 +3,12 @@
       style="cursor: pointer"
       :class="[{selected: selected}, {kasios: isA==='Kasios'},
       {faded: isA==='Species' && !isPrediction && kasiosSelected}]"
-
       @click="selectItem">
       {{ value }}
       <transition name="slide-fade">
       <span v-if="isPrediction" class="badge badge-pill badge-dark"
             :style="{'background-color' : bgColor}">{{ predictionValue }}</span>
+      <span v-if="isUnknown" class="badge badge-pill badge-warning">?</span>
       </transition>
   </li>
 </template>
@@ -30,7 +30,8 @@
       isPrediction: false,
       predictionValue: 0,
       bgColor: '',
-      kasiosSelected: false
+      kasiosSelected: false,
+      isUnknown: false
     }
   },
   methods: {
@@ -88,6 +89,7 @@
         this.isPrediction = false;
         this.predictionValue = 0;
       }
+      this.isUnknown = false;
       this.kasiosSelected = false;
     });
     speciesEventBus.$on('highlightPredictions', (prediction) => {
@@ -111,6 +113,15 @@
           this.predictionColor(prediction.third);
         } 
       }
+      if(this.isA === "Kasios") {
+        if(prediction.unknown === true) {
+          if(prediction.ID === this.value)
+          this.isUnknown = true;
+          console.log(this);
+        } else {
+          this.isUnkown = false;
+        }
+      }
     });
     speciesEventBus.$on('viewChanged', () => {
       if(this.isPrediction) {
@@ -118,7 +129,12 @@
         this.predictionValue = 0;
       }
       this.kasiosSelected = false;
-      speciesEventBus.$emit('itemWasSelected', this);
+      // speciesEventBus.$emit('itemWasSelected', this);
+    });
+    kasiosEventBus.$on('itemWasSelected', (item) => {
+      if(this.isUnknown && this != item) {
+        this.isUnknown = false;
+      }
     })
   }
 }
@@ -140,12 +156,12 @@
     /*background-color: rgba(33, 97, 140, 0.1);*/
     background-color: whitesmoke;
   }
-  .fade-enter-active, .fade-leave-active {
+  /* .fade-enter-active, .fade-leave-active {
     transition: opacity .5s;
   }
-  .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  .fade-enter, .fade-leave-to {
     opacity: 0;
-  }
+  } */
   .slide-fade-enter-active {
     transition: all .3s ease;
   }

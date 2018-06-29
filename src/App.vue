@@ -1,39 +1,4 @@
 <template>
-  <!-- <div id="app">
-    <app-header class="" :current-view="currentView"></app-header>
-    <div class="container-fluid" id="components">
-      <div class="row">
-        <transition name="fade-up" mode="out-in" appear>
-          <div class="col-md-1 " v-if="currentView === 'Main View'">
-            <app-list :contains="'Kasios'" :items="kasiosFileNames"></app-list>
-          </div>
-        </transition>
-        <div class="col-md-2" id="speciesListContainer">
-          <transition name="fade-up" mode="out-in" appear>
-            <app-list :contains="'Species'" :items="speciesNames" ></app-list>
-          </transition>
-        </div>
-
-        <transition name="fade-up" mode="out-in" appear>
-          <div class="col-md-5" v-if="currentView === 'Main View'" style="z-index: 4">
-            <app-map-container :kasiosLocations="kasiosLocations" :dataNest="dataNest"></app-map-container>
-          </div>
-        </transition>
-        <transition name="fade-up">
-          <div class="col-md-10" v-if="currentView === 'Month View'" style="z-index: 4">
-            <app-month-container :monthNest="monthNest"></app-month-container>
-          </div>
-        </transition>
-        <transition name="fade-up" mode="out-in" appear>
-          <div class="col-md-4" v-if="currentView === 'Main View'">
-            <app-audio-container :contains="'Kasios'"></app-audio-container>
-            <app-audio-container :contains="'Species'"></app-audio-container>
-          </div>
-        </transition>
-      </div>
-    </div>
-  </div>  -->
-
   <div id="app">
     <transition name="fade-down" appear>
       <app-header class="" :current-view="currentView"></app-header>
@@ -72,7 +37,6 @@
         </div>
       </div>
     </transition>
-
     </div>
   </div> 
 </template>
@@ -206,7 +170,11 @@
           d.first_confidence = Math.round(d.first_confidence * 100) + "%";
           d.second_confidence = Math.round(d.second_confidence * 100) + "%";
           d.third_confidence = Math.round(d.third_confidence * 100) + "%";
-          d.first
+          if(d.model_Agreement === "0/7") {
+            d.unknown = true;
+          } else {
+            d.unknown = false;
+          }
         })
         // Nest data based on ID
         var nestedPredictions = d3.nest(this.rawPredictions) 
@@ -214,6 +182,7 @@
             return d.ID
           }).entries(this.rawPredictions)
 
+        console.log(nestedPredictions);
         return nestedPredictions;
       }
     },
@@ -243,9 +212,6 @@
 
 <style>
   @import "../node_modules/leaflet/dist/leaflet.css";
-  .leaflet-fake-icon-image-2x {
-    background-image: url(/data/icons/marker.png);
-  }
 
   #app {
     font-family: 'Nunito', Helvetica, Arial, sans-serif;

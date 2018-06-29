@@ -50,8 +50,6 @@
         selectedItem: ''
       }
     },
-    methods: {
-    },
     components: {
       'app-list-item' : ListItem
     }

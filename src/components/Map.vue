@@ -2,7 +2,7 @@
   <div id="map">
     <l-map ref="map" :minZoom="minZoom" :crs="crs">
       <l-image-overlay :url="src" :bounds="bounds"></l-image-overlay>
-      <l-marker v-if="kasiosLocation != null" :lat-lng="kasiosLocation.latlng" :icon="'/data/icons/marker.png'">
+      <l-marker v-if="kasiosLocation != null" :lat-lng="kasiosLocation.latlng">
         <l-popup :content="'Recording ' + kasiosLocation.name + ': [' + kasiosLocation.x + ', ' + kasiosLocation.y + ']'"
         ></l-popup>
       </l-marker>
