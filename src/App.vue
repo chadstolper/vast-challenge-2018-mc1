@@ -22,7 +22,7 @@
 
           <div class="col-md-4">
             <app-audio-container :contains="'Kasios'"></app-audio-container>
-            <app-audio-container :contains="'Species'"></app-audio-container>
+            <app-audio-container :contains="'Species'" :representativeData="representativeSpecies"></app-audio-container>
           </div>
       </div>
 
@@ -103,7 +103,7 @@
         }
         // Format data from csv
         this.allBirds.forEach(function (d) {
-          d.Day = d.Date.slice(3, 6);
+          d.Day = d.Date.slice(3, 5);
           d.Month = d.Date.slice(0, 2);
           d.Year = d.Date.slice(6);
           d.X = +d.X;
@@ -184,7 +184,19 @@
 
         console.log(nestedPredictions);
         return nestedPredictions;
-      }
+      },
+      // Metadata on each representative species recording
+      representativeSpecies() {
+        // Prevents null/undefined errors
+        if(!this.allBirds) {
+          return [];
+        }
+        function filterCriteria(d) {
+          return d.Representative !== "";
+        }
+        var repSpeciesData = this.allBirds.filter(filterCriteria);
+        return repSpeciesData;
+      },
     },
     created() {
       // When an item is selected in the Kasios list, highlight the predictions in the Species list

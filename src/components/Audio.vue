@@ -21,6 +21,7 @@
           {{waveSpecButton}}
         </button>
       </div>
+      <p>{{audioMetaData}}</p>
     </div>
     <div v-if="audioFile===null">Please select an audio file to analyze</div>
   </div>
@@ -36,6 +37,7 @@
       baseDirectory: String,
       audioFile: null,
       contains: String, // Which type of audio it is, Kasios or Species
+      representativeData: null, // Metadata for each species audio recording
     },
     data: function(){
       return{
@@ -46,6 +48,7 @@
         showSpec: false,
         waveSurferHeight: 128,
         waveSpecButton: "Show Spectrogram",
+        audioMetaData: String,
       }
     },
     computed: {
@@ -58,11 +61,9 @@
       // Update player when new audio file is selected
       audioFile() {
         // Reset default values
-        this.showSpec = false
-        this.waveSpecButton = "Show Spectrogram"
-        this.currentTime = '00:00'
-        this.audioLength = '00:00'
-        this.playPauseSymbol = 'media-play'
+        this.resetValues();
+
+        this.getAudioMetadata();
 
         // Passes Vue instance to callback functions
         var vmWave = this;
@@ -145,6 +146,16 @@
           this.waveSurferInstance.drawer.clearWave()
           this.waveSurferInstance.drawBuffer()
         }
+      },
+      resetValues() {
+        this.showSpec = false
+        this.waveSpecButton = "Show Spectrogram"
+        this.currentTime = '00:00'
+        this.audioLength = '00:00'
+        this.playPauseSymbol = 'media-play'
+      },
+      getAudioMetadata() {
+        this.audioMetaData = "TESTING";
       },
     }
   }

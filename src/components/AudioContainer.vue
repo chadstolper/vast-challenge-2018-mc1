@@ -3,7 +3,7 @@
       <h5>{{ contains }} Audio: {{selectedAudioFile}}</h5>
       <AudioPlayer :audioFile="selectedAudioFile"
       :baseDirectory="baseAudioDirectory"
-      :contains="contains"></AudioPlayer>
+      :contains="contains" :representativeData="representativeData"></AudioPlayer>
   </div>
 </template>
 
@@ -38,6 +38,7 @@
     },
     props: {
       contains: String,
+      representativeData: null,
     },
     data: function() {
       return {
