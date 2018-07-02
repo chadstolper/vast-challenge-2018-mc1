@@ -8,7 +8,12 @@
       <transition name="slide-fade">
       <span v-if="isPrediction" class="badge badge-pill badge-dark"
             :style="{'background-color' : bgColor}">{{ predictionValue }}</span>
-      <span v-if="isUnknown" class="badge badge-pill badge-warning">?</span>
+      <span v-if="isUnknown" class="badge badge-pill badge-warning" 
+      title="We could not produce an accurate prediction
+      for this species from the historical recordings
+      and do not believe this is a local species.
+      Please feel free to listen to the audio
+      and find a match.">?</span>
       </transition>
   </li>
 </template>

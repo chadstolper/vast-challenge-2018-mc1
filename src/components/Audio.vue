@@ -4,7 +4,7 @@
       <div :id="containsWaveform">
       </div>
 
-      <div class="btn-group">
+      <div class="btn-group" id="audioControls">
         <button type="button" class="btn btn-default" @click="skipBack">
           <img src="/data/icons/media-skip-backward.svg" alt="Back">
         </button>
@@ -14,10 +14,10 @@
         <button type="button" class="btn btn-default" @click="skipForward">
           <img src="/data/icons/media-skip-forward.svg" alt="Forward">
         </button>
-        <button type="button" class="btn btn-disabled">
+        <button type="button" class="btn btn-disabled w-100 text-left">
           {{currentTime}} / {{audioLength}}
         </button>
-        <button type="button" class="btn btn-default w-100 text-right" @click="showSpectrogram">
+        <button type="button" class="btn btn-default" @click="showSpectrogram">
           {{waveSpecButton}}
         </button>
       </div>
@@ -101,8 +101,8 @@
           scrollParent: true,
           normalize: true,
           height: this.waveSurferHeight,
-          waveColor: 'grey',
-          progressColor: 'black',
+          waveColor: '#a0abbc',
+          progressColor: '#001942',
         })
       })
     },
@@ -159,5 +159,11 @@
   .btn-group {
     flex: 1;
     display: flex;
+  }
+  .btn{
+    border-radius: 0 0 5px 5px
+  }
+  #audioControls {
+    padding: 0 0 5px 0;
   }
 </style>

@@ -57,5 +57,9 @@
     margin-top: 10px;
     width: 100%;
     background-color:whitesmoke;
+    border-radius: 5px;
+  }
+  h5 {
+    padding: 10px 0 5px 0;
   }
 </style>
