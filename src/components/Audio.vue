@@ -1,9 +1,11 @@
 <template>
   <div id="audio">
     <div v-show="audioFile!==null">
+      <!-- Wavesurfer div, contains waveform and spectrogram -->
       <div :id="containsWaveform">
       </div>
 
+      <!-- Audio playback controls -->
       <div class="btn-group" id="audioControls">
         <button type="button" class="btn btn-default" @click="skipBack">
           <img src="/data/icons/media-skip-backward.svg" alt="Back">
@@ -21,6 +23,7 @@
           {{waveSpecButton}}
         </button>
       </div>
+      <!-- File metadata viewer -->
       <p>File Metadata <br>
         <span v-html="audioMetaData"></span>
       </p>
@@ -138,8 +141,10 @@
         this.showSpec = !this.showSpec
         var waveDivChildren = document.getElementById(this.containsWaveform).childNodes;
         var waveElementChildren = waveDivChildren[0].childNodes;
+        var cursorDiv = waveElementChildren[0];
         var waveCanvas = waveElementChildren[1].getContext('2d');
         if (this.showSpec==true){
+          cursorDiv.style.borderRight = "1px solid #DDD"
           this.waveSpecButton = "Show Waveform"
           this.waveSurferInstance.drawer.clearWave()
           var img = new Image;
@@ -149,6 +154,7 @@
           img.src = "/data/spectrograms_color/"+this.audioFile+'.png';
         }
         else{
+          cursorDiv.style.borderRight = "1px solid #333"
           this.waveSpecButton = "Show Spectrogram"
           this.waveSurferInstance.drawer.clearWave()
           this.waveSurferInstance.drawBuffer()
