@@ -88,6 +88,8 @@
   #monthContainer {
     width: 100%;
     height: 100%;
+    display: flex;
+    flex-wrap: wrap;
   }
   .leaflet-left {
     display: none;
@@ -98,6 +100,6 @@
     margin-top: 30px;
   }
   .month {
-    margin: 0 auto;
+    margin: auto;
   }
 </style>
