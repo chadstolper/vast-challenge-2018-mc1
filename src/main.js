@@ -1,5 +1,8 @@
 import Vue from 'vue'
 import App from './App.vue'
+import VueSweetalert2 from 'vue-sweetalert2';
+
+Vue.use(VueSweetalert2);
 
 export const kasiosEventBus = new Vue();
 export const speciesEventBus = new Vue();
