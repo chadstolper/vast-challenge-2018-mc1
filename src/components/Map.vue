@@ -218,4 +218,11 @@
     position: relative;
     top: 10px;
   }
+
+  /* .marker {
+    margin-left: -13px;
+    margin-top: -30px;
+    width: 30px;
+    height: 30px;
+  } */
 </style>
