@@ -21,7 +21,9 @@
           {{waveSpecButton}}
         </button>
       </div>
-      <p>{{audioMetaData}}</p>
+      <p>File Metadata <br>
+        <span v-html="audioMetaData"></span>
+      </p>
     </div>
     <div v-if="audioFile===null">Please select an audio file to analyze</div>
   </div>
@@ -48,7 +50,7 @@
         showSpec: false,
         waveSurferHeight: 128,
         waveSpecButton: "Show Spectrogram",
-        audioMetaData: String,
+        audioMetaData: null, 
       }
     },
     computed: {
@@ -63,11 +65,16 @@
         // Reset default values
         this.resetValues();
 
-        this.getAudioMetadata();
-
         // Passes Vue instance to callback functions
         var vmWave = this;
 
+        if(this.contains=="Species"){
+          this.getSpeciesMetadata();
+        }
+        else{
+          this.getKasiosMetadata();
+        }
+        
         // Load in and draw waveform
         this.waveSurferInstance.load(
           this.baseDirectory + this.audioFile + '.mp3',
@@ -139,7 +146,7 @@
           img.onload = function(){
             waveCanvas.drawImage(img,0,0);
           };
-          img.src = "/data/spectrograms/"+this.audioFile+'.png';
+          img.src = "/data/spectrograms_color/"+this.audioFile+'.png';
         }
         else{
           this.waveSpecButton = "Show Spectrogram"
@@ -154,8 +161,24 @@
         this.audioLength = '00:00'
         this.playPauseSymbol = 'media-play'
       },
-      getAudioMetadata() {
-        this.audioMetaData = "TESTING";
+      getSpeciesMetadata() {
+        var rawMetadata = this.representativeData.filter(d => d.Species == this.audioFile)[0]
+        this.audioMetaData = "<b>Position:</b> (" + rawMetadata.X + "," + rawMetadata.Y + 
+        ") <b>Time Recorded:</b> " + rawMetadata.Time + " - " + rawMetadata.Date +
+        "<br><b>File ID:</b> " + rawMetadata['File ID'] + " <b>Quality:</b> " + rawMetadata.Quality + 
+        " <b>Vocalization Type:</b> " + rawMetadata.Vocalization_type
+        
+        // this.audioMetaData = "X: " + rawMetadata.X + 
+        // " Y: " + rawMetadata.Y + 
+        // " Date: " + rawMetadata.Date + 
+        // " File ID: " + rawMetadata['File ID'] +
+        // " Vocalization type: " + rawMetadata.Vocalization_type +
+        // " Quality: " + rawMetadata.Quality +
+        // " Time: " + rawMetadata.Time
+      },
+      getKasiosMetadata() {
+        var rawMetadata = this.representativeData.filter(d => d.name == this.audioFile)[0]
+        this.audioMetaData = "<b>Position:</b> (" + rawMetadata.x + "," + rawMetadata.y + ")"
       },
     }
   }

@@ -21,7 +21,7 @@
           </div>
 
           <div class="col-md-4">
-            <app-audio-container :contains="'Kasios'"></app-audio-container>
+            <app-audio-container :contains="'Kasios'" :representative-data="kasiosLocations"></app-audio-container>
             <app-audio-container :contains="'Species'" :representativeData="representativeSpecies"></app-audio-container>
           </div>
       </div>
