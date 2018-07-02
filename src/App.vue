@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <transition name="fade-down" appear>
-      <app-header class="" :current-view="currentView"></app-header>
+      <app-header></app-header>
     </transition>
 
     <div class="container-fluid" id="components">
@@ -33,8 +33,20 @@
             <app-list :contains="'Species'" :items="speciesNames" ></app-list>
         </div>
 
-        <div class="col-md-10">
+        <div class="col-lg-10">
           <app-month-container :monthNest="monthNest"></app-month-container>
+        </div>
+      </div>
+
+      <!-- Yearly View -->
+      <div class="row" v-if="currentView === 'Year View'" :key="'year'">
+        <div class="col-md-2">
+            <app-list :contains="'Species'" :items="speciesNames" 
+            :current-view="currentView"></app-list>
+        </div>
+
+        <div class="col-lg-10">
+          <app-year-container :dataNest="dataNest"></app-year-container>
         </div>
       </div>
     </transition>
@@ -49,6 +61,7 @@
   import MapContainer from './components/MapContainer.vue'
   import AudioContainer from './components/AudioContainer.vue'
   import MonthContainer from './components/MonthContainer.vue'
+  import YearContainer from './components/YearContainer.vue'
   import { kasiosEventBus } from './main';
   import { speciesEventBus } from './main';
 
@@ -62,7 +75,8 @@
       'app-list': List,
       'app-map-container' : MapContainer,
       'app-audio-container' : AudioContainer,
-      'app-month-container' : MonthContainer
+      'app-month-container' : MonthContainer,
+      'app-year-container' : YearContainer
     }, 
     data: function () {
         return {
@@ -271,6 +285,7 @@
     -moz-osx-font-smoothing: grayscale;
     color: #2c3e50;
     height: 100vh;
+    overflow: hidden;
   }
 
   .leaflet-bottom {
@@ -278,6 +293,10 @@
   }
 
   .month .leaflet-left {
+    display: none;
+  }
+
+  .year .leaflet-left {
     display: none;
   }
 
@@ -299,19 +318,19 @@
     transform: translate3d(0, -100%, 0);
   }
   /*=== Scrollbar css for longer audio files ===*/
-  ::-webkit-scrollbar {
+  #audioContainer #a ::-webkit-scrollbar {
     height: 4px;
   }
 
-  ::-webkit-scrollbar-track {
+  #audioContainer ::-webkit-scrollbar-track {
       background: #dddddd ; 
   }
 
-  ::-webkit-scrollbar-thumb {
+  #audioContainer ::-webkit-scrollbar-thumb {
       background: #21618C;
   }
 
-  ::-webkit-scrollbar-thumb:hover {
+  #audioContainer ::-webkit-scrollbar-thumb:hover {
       background: #1C5377; 
   }
 </style>

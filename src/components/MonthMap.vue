@@ -110,7 +110,6 @@
     width: 174px;
     height: 174px;
     margin: 5px 20px 5px 20px;
-    position: relative;
     display: inline-block;
     transition: 0.5s;
     -moz-transition: 0.5s;

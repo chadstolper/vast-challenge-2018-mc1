@@ -1,6 +1,16 @@
 <template>
   <ul class="list-group list-group-flush">
-    <li class="list-group-item" id="listTitle">{{ contains }}</li>
+    <li class="list-group-item" id="listTitle">{{ contains }}
+      <span v-if="currentView === 'Year View'" id="check">
+      <input type="checkbox" name="include" value="true" checked 
+        @click="toggleEmpty">
+        Include empty</span>
+    </li>
+    <!-- <li v-if="currentView === 'Year View'" 
+        class="list-group-item"
+        id="check">
+        <input type="checkbox" name="include" value="true">
+        Include empty years</li> -->
     <app-list-item v-for="(item, i) in items" 
           :key="i" 
           :value="item"
@@ -44,10 +54,18 @@
     props: {
       contains: String,
       items: Array,
+      currentView: String
     },
     data: function() {
       return {
-        selectedItem: ''
+        selectedItem: '',
+        toggle: true
+      }
+    },
+    methods: {
+      toggleEmpty() {
+        this.toggle = false;
+        speciesEventBus.$emit('toggleEmpty', this.toggle);
       }
     },
     components: {
@@ -60,8 +78,20 @@
   #listTitle {
     font-size: 20px;
     text-align: left;
+    padding-bottom: 0px;
+    /*border: none;*/
   }
   li {
     white-space: nowrap;
+  }
+  #check {
+    /*border: none;*/
+    font-size: 12px;
+    padding: 4px;
+  }
+
+  .list-group {
+    overflow-y: auto;
+    max-height: 100vh;
   }
 </style>

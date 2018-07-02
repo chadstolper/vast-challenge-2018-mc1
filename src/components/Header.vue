@@ -6,16 +6,20 @@
         <h3 style="text-align:left; display: inline-block">Audio Explorer</h3>
       </a>
       <h6 style="float:right; padding: 8px 0 0 0; display: inline-block">Created by Colin Scruggs and Cameron Henkel</h6>
-            <div class="btn-group" role="group" id="toggle" aria-label="Controls">
+        <div class="btn-group" role="group" id="toggle" aria-label="Controls">
           <button type="button" class="btn btn-light btn-sm"
-                  @click="toggleView"
+                  @click="toggleView('Main View')"
                   :class="{active : currentView === 'Main View'}">Main View
           </button>
           <button type="button" class="btn btn-light btn-sm"
-                  @click="toggleView"
+                  @click="toggleView('Month View')"
                   :class="{active : currentView === 'Month View'}">Month View
           </button>
-      </div>
+          <button type="button" class="btn btn-light btn-sm"
+                  @click="toggleView('Year View')"
+                  :class="{active : currentView === 'Year View'}">Year View
+          </button>
+        </div>
     </div>
   </div>
 </template>
@@ -25,17 +29,20 @@
 
   export default {
     name: 'Header',
-    props: {
-      currentView: String
+    // props: {
+    //   currentView: String
+    // },
+    data: {
+      currentView: "Main View"
     },
     methods: {
-      toggleView() {
-        if(this.currentView==="Main View") {
-          speciesEventBus.$emit('viewChanged', 'Month View');
-        }
-        else {
-          speciesEventBus.$emit('viewChanged', 'Main View');
-        }
+      toggleView(view) {
+        // if(this.currentView==="Main View") {
+        //   speciesEventBus.$emit('viewChanged', 'Month View');
+        // } else if {
+        //   speciesEventBus.$emit('viewChanged', 'Main View');
+        // }
+        speciesEventBus.$emit('viewChanged', view);
       }
     }
   }
