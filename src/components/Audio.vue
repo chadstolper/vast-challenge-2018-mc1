@@ -1,5 +1,4 @@
 <template>
-  <transition name="fade-up-fast" mode="out-in">
   <div id="audio">
     <div v-show="audioFile!==null">
       <!-- Wavesurfer div, contains waveform and spectrogram -->
@@ -31,7 +30,6 @@
     </div>
     <div v-if="audioFile===null">Please select an audio file to analyze</div>
   </div>
-  </transition>
 </template>
 
 <script>

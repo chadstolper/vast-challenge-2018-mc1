@@ -40,7 +40,7 @@
         // Deselect item from Kasios list when view is changed
         speciesEventBus.$on('viewChanged'), () => {
             // this.selectedItem = '';
-            kasiosEventBus.$emit('itemWasDeselected');
+            // kasiosEventBus.$emit('itemWasDeselected');
         }
       } else if(this.contains === "Species") {
         speciesEventBus.$on('itemWasSelected', (item) => {
@@ -49,17 +49,20 @@
         speciesEventBus.$on('itemWasDeselected', () => {
           this.selectedItem = '';
         });
+        if(this.selected != '') {
+          this.selectedItem = this.selected;
+        }
       }
     },
     props: {
       contains: String,
       items: Array,
       currentView: String,
-      selectedItem: String
+      selected: String
     },
     data: function() {
       return {
-        // selectedItem: '',
+        selectedItem: '',
         toggle: true
       }
     },
@@ -67,6 +70,11 @@
       toggleEmpty() {
         this.toggle = false;
         speciesEventBus.$emit('toggleEmpty', this.toggle);
+      }
+    },
+    watch: {
+      selected() {
+        this.selectedItem = this.selected;
       }
     },
     components: {

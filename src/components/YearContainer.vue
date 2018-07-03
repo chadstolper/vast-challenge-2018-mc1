@@ -3,7 +3,7 @@
         <transition name="fade-up-fast" mode="out-in" appear>
         <h4 v-if="selectedSpecies === ''">Please select a species</h4>
         <div>
-          <transition-group name="grid" tag="app-small-map">
+          <transition-group name="grid">
           <app-small-map v-if="yearData != null"
           v-for="year in yearData"
           :key="year.key"
@@ -23,11 +23,11 @@
     name: 'YearContainer',
     props: {
       dataNest: Array,
-      selectedSpecies: String
+      selected: String
     },
     data() {
       return {
-        // selectedSpecies: '',
+        selectedSpecies: '',
         speciesData: null,
         availableYears: [],
         yearData: null,
@@ -51,7 +51,8 @@
         this.includeBlankYears = !this.includeBlankYears;
       });
 
-      if(this.selectedSpecies != '') {
+      if(this.selected != '') {
+        this.selectedSpecies = this.selected;
         this.updateSpeciesData();
       }
     },
@@ -59,6 +60,9 @@
       'app-small-map': SmallMap
     },
     watch: {
+      selected: function() {
+        this.selectedSpecies = this.selected;
+      },
       // When a species is selected, assign speciesData to its corresponding data from dataNest
       selectedSpecies: function() {
         this.updateSpeciesData();

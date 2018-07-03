@@ -9,11 +9,11 @@
     <transition name="fade-up" mode="out-in" appear>
       <div class="row" v-if="currentView === 'Main View'" :key="'main'">
         <div class="col-md-1">
-            <app-list :contains="'Kasios'" :items="kasiosFileNames" :selected-item="''"></app-list>
+            <app-list :contains="'Kasios'" :items="kasiosFileNames" :selected="''"></app-list>
         </div>
 
         <div class="col-md-2">
-            <app-list :contains="'Species'" :items="speciesNames" :selected-item="selectedSpecies"></app-list>
+            <app-list :contains="'Species'" :items="speciesNames" :selected="selectedSpecies"></app-list>
         </div>
 
           <div class="col-md-5">
@@ -32,18 +32,18 @@
         <div class="col-md-2">
             <app-list :contains="'Species'" :items="speciesNames"
                       :current-view="currentView" 
-                      :selected-item="selectedSpecies"></app-list>
+                      :selected="selectedSpecies"></app-list>
         </div>
         <!-- Month Container-->
         <transition name="fade-up" mode="out-in" appear>
         <div class="col-lg-10" v-if="currentView === 'Month View'">
           <app-month-container :monthNest="monthNest" 
-                               :selected-species="selectedSpecies"></app-month-container>
+                               :selected="selectedSpecies"></app-month-container>
         </div>
         <!-- Year Container -->
         <div class="col-lg-10" v-if="currentView === 'Year View'">
           <app-year-container :dataNest="dataNest" 
-                              :selected-species="selectedSpecies"></app-year-container>
+                              :selected="selectedSpecies"></app-year-container>
         </div>
         </transition>
       </div>
@@ -196,7 +196,6 @@
             return d.ID
           }).entries(this.rawPredictions)
 
-        console.log(nestedPredictions);
         return nestedPredictions;
       },
       // Metadata on each representative species recording
@@ -232,16 +231,6 @@
       speciesEventBus.$on('itemWasDeselected', () => {
           this.selectedSpecies = '';
       });
-    },
-    methods: {
-      toggleView() {
-        // If the Audio interface is currently displayed
-        if(this.currentView === "Audio")
-          this.currentView = "Month"; // toggle to the Month interface
-        
-        else // If the Month interface is currently displayed
-          this.currentView = "Audio"; // toggle to the Audio interface
-      },
     }
   }
 </script>

@@ -63,7 +63,8 @@
       }).addTo(map);
       this.$data.heatmap = heatmap;
 
-      this.drawHeatmap();
+      if(this.timeUnit != null)
+        this.drawHeatmap();
     },
     watch: {
       // Resets entire map when deselecting a species from the list

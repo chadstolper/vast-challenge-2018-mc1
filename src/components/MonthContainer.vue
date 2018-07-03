@@ -21,11 +21,11 @@
     name: 'MonthContainer',
     props: {
       monthNest: Array,
-      selectedSpecies: String
+      selected: String
     },
     data() {
       return {
-        // selectedSpecies: '',
+        selectedSpecies: '',
         speciesData: null,
         months: ['January', 'Februrary', 'March', 'April', 'May', 'June', 
         'July', 'August', 'September', 'October', 'November', 'December'],
@@ -45,8 +45,9 @@
         this.availableMonths = [];
         this.speciesData = null;
       });
-      
-      if(this.selectedSpecies != '') {
+
+      if(this.selected != '') {
+        this.selectedSpecies = this.selected;
         this.updateSpeciesData();
       }
     },
@@ -54,6 +55,9 @@
       'app-small-map': SmallMap
     },
     watch: {
+      selected: function() {
+        this.selectedSpecies = this.selected;
+      },
       // When a species is selected, assign speciesData to its corresponding data from monthNest
       selectedSpecies: function() {
         this.updateSpeciesData();
