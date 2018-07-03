@@ -3,11 +3,11 @@
         <transition name="fade-up-fast" mode="out-in" appear>
         <h4 v-if="selectedSpecies === ''">Please select a species</h4>
         <div>
-          <app-month-map v-if="monthData != null"
+          <app-small-map v-if="monthData != null"
           v-for="month in monthData"
           :key="month.key"
-          :month="month"
-          class="month"></app-month-map>
+          :timeUnit="month"
+          class="month"></app-small-map>
         </div>
         </transition>
     </div>
@@ -15,16 +15,17 @@
 
 <script>
   import { speciesEventBus } from '../main';
-  import MonthMap from './MonthMap.vue';
+  import SmallMap from './SmallMap.vue';
 
   export default {
     name: 'MonthContainer',
     props: {
-      monthNest: Array
+      monthNest: Array,
+      selectedSpecies: String
     },
     data() {
       return {
-        selectedSpecies: '',
+        // selectedSpecies: '',
         speciesData: null,
         months: ['January', 'Februrary', 'March', 'April', 'May', 'June', 
         'July', 'August', 'September', 'October', 'November', 'December'],
@@ -44,15 +45,18 @@
         this.availableMonths = [];
         this.speciesData = null;
       });
+      
+      if(this.selectedSpecies != '') {
+        this.updateSpeciesData();
+      }
     },
     components: {
-      'app-month-map': MonthMap
+      'app-small-map': SmallMap
     },
     watch: {
       // When a species is selected, assign speciesData to its corresponding data from monthNest
       selectedSpecies: function() {
-        var index = this.monthNest.findIndex(species => species.key === this.selectedSpecies);
-        this.speciesData = this.monthNest[index];
+        this.updateSpeciesData();
       },
       // When speciesData is updated, deterine available months of data and create monthData array
       speciesData: function() {
@@ -79,6 +83,12 @@
         }
         this.monthData = data;
         }
+      }
+    },
+    methods: {
+      updateSpeciesData() {
+        var index = this.monthNest.findIndex(species => species.key === this.selectedSpecies);
+        this.speciesData = this.monthNest[index];
       }
     }
   }

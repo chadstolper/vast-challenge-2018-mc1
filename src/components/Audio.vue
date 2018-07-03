@@ -1,4 +1,5 @@
 <template>
+  <transition name="fade-up-fast" mode="out-in">
   <div id="audio">
     <div v-show="audioFile!==null">
       <!-- Wavesurfer div, contains waveform and spectrogram -->
@@ -30,6 +31,7 @@
     </div>
     <div v-if="audioFile===null">Please select an audio file to analyze</div>
   </div>
+  </transition>
 </template>
 
 <script>
@@ -169,7 +171,7 @@
       },
       getSpeciesMetadata() {
         var rawMetadata = this.representativeData.filter(d => d.Species == this.audioFile)[0]
-        this.audioMetaData = "<b>Position:</b> (" + rawMetadata.X + "," + rawMetadata.Y + 
+        this.audioMetaData = "<b>Location:</b> (" + rawMetadata.X + "," + rawMetadata.Y + 
         ") <b>Time Recorded:</b> " + rawMetadata.Time + " - " + rawMetadata.Date +
         "<br><b>File ID:</b> " + rawMetadata['File ID'] + " <b>Quality:</b> " + rawMetadata.Quality + 
         " <b>Vocalization Type:</b> " + rawMetadata.Vocalization_type
@@ -184,7 +186,7 @@
       },
       getKasiosMetadata() {
         var rawMetadata = this.representativeData.filter(d => d.name == this.audioFile)[0]
-        this.audioMetaData = "<b>Position:</b> (" + rawMetadata.x + "," + rawMetadata.y + ")"
+        this.audioMetaData = "<b>Location:</b> (" + rawMetadata.x + "," + rawMetadata.y + ")"
       },
     }
   }
