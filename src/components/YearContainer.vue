@@ -3,12 +3,12 @@
         <transition name="fade-up-fast" mode="out-in" appear>
         <h4 v-if="selectedSpecies === ''">Please select a species</h4>
         <div>
-          <transition-group name="grid" tag="app-month-map">
-          <app-month-map v-if="yearData != null"
+          <transition-group name="grid" tag="app-small-map">
+          <app-small-map v-if="yearData != null"
           v-for="year in yearData"
           :key="year.key"
-          :month="year"
-          class="year"></app-month-map>
+          :timeUnit="year"
+          class="year"></app-small-map>
           </transition-group >
         </div>
         </transition>
@@ -17,16 +17,17 @@
 
 <script>
   import { speciesEventBus } from '../main';
-  import MonthMap from './MonthMap.vue';
+  import SmallMap from './SmallMap.vue';
 
   export default {
     name: 'YearContainer',
     props: {
-      dataNest: Array
+      dataNest: Array,
+      selectedSpecies: String
     },
     data() {
       return {
-        selectedSpecies: '',
+        // selectedSpecies: '',
         speciesData: null,
         availableYears: [],
         yearData: null,
@@ -49,17 +50,20 @@
         console.log(value);
         this.includeBlankYears = !this.includeBlankYears;
       });
+
+      if(this.selectedSpecies != '') {
+        this.updateSpeciesData();
+      }
     },
     components: {
-      'app-month-map': MonthMap
+      'app-small-map': SmallMap
     },
     watch: {
-      // When a species is selected, assign speciesData to its corresponding data from monthNest
+      // When a species is selected, assign speciesData to its corresponding data from dataNest
       selectedSpecies: function() {
-        var index = this.dataNest.findIndex(species => species.key === this.selectedSpecies);
-        this.speciesData = this.dataNest[index];
+        this.updateSpeciesData();
       },
-      // When speciesData is updated, deterine available months of data and create monthData array
+      // When speciesData is updated, deterine available years of data and create yearData array
       speciesData: function() {
         if(this.speciesData != undefined) {
           var years = [];
@@ -95,6 +99,10 @@
           }
         }
         this.yearData = data;
+      },
+      updateSpeciesData() {
+        var index = this.dataNest.findIndex(species => species.key === this.selectedSpecies);
+        this.speciesData = this.dataNest[index];
       }
     }
   }

@@ -141,6 +141,9 @@
         this.isUnknown = false;
       }
     })
+    if(this.isA === "Species" && this.value === this.selectedItemInList) {
+      this.selected = true;
+    }
   }
 }
 </script>

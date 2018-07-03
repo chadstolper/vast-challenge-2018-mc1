@@ -6,20 +6,20 @@
         <h3 style="text-align:left; display: inline-block">Audio Explorer</h3>
       </a>
       <img id= "aboutImg" src="/data/icons/about.png" alt="About this project" class="float-right" @click="aboutPage">
-        <div class="btn-group" role="group" id="toggle" aria-label="Controls">
-          <button type="button" class="btn btn-light btn-sm"
-                  @click="toggleView('Main View')"
-                  :class="{active : currentView === 'Main View'}">Main View
-          </button>
-          <button type="button" class="btn btn-light btn-sm"
-                  @click="toggleView('Month View')"
-                  :class="{active : currentView === 'Month View'}">Month View
-          </button>
-          <button type="button" class="btn btn-light btn-sm"
-                  @click="toggleView('Year View')"
-                  :class="{active : currentView === 'Year View'}">Year View
-          </button>
-        </div>
+      <div class="btn-group" role="group" id="toggle" aria-label="Controls">
+        <button type="button" class="btn btn-light btn-sm"
+                @click="toggleView('Main View')"
+                :class="{active : currentView === 'Main View'}">Main View
+        </button>
+        <button type="button" class="btn btn-light btn-sm"
+                @click="toggleView('Month View')"
+                :class="{active : currentView === 'Month View'}">Month View
+        </button>
+        <button type="button" class="btn btn-light btn-sm"
+                @click="toggleView('Year View')"
+                :class="{active : currentView === 'Year View'}">Year View
+        </button>
+      </div>
     </div>
   </div>
 </template>
@@ -105,6 +105,7 @@
   #toggle {
     float: right;
     margin-right: 30px;
+    margin-top: 2px;
   }
   .faded {
     opacity: 0.6;

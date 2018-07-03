@@ -39,7 +39,7 @@
         });
         // Deselect item from Kasios list when view is changed
         speciesEventBus.$on('viewChanged'), () => {
-            this.selectedItem = '';
+            // this.selectedItem = '';
             kasiosEventBus.$emit('itemWasDeselected');
         }
       } else if(this.contains === "Species") {
@@ -54,11 +54,12 @@
     props: {
       contains: String,
       items: Array,
-      currentView: String
+      currentView: String,
+      selectedItem: String
     },
     data: function() {
       return {
-        selectedItem: '',
+        // selectedItem: '',
         toggle: true
       }
     },

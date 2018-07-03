@@ -9,15 +9,16 @@
     <transition name="fade-up" mode="out-in" appear>
       <div class="row" v-if="currentView === 'Main View'" :key="'main'">
         <div class="col-md-1">
-            <app-list :contains="'Kasios'" :items="kasiosFileNames"></app-list>
+            <app-list :contains="'Kasios'" :items="kasiosFileNames" :selected-item="''"></app-list>
         </div>
 
         <div class="col-md-2">
-            <app-list :contains="'Species'" :items="speciesNames" ></app-list>
+            <app-list :contains="'Species'" :items="speciesNames" :selected-item="selectedSpecies"></app-list>
         </div>
 
           <div class="col-md-5">
-            <app-map-container :kasiosLocations="kasiosLocations" :dataNest="dataNest"></app-map-container>
+            <app-map-container :kasiosLocations="kasiosLocations" :dataNest="dataNest"
+                               :selected-species="selectedSpecies"></app-map-container>
           </div>
 
           <div class="col-md-4" id="audioContainer">
@@ -26,27 +27,25 @@
           </div>
       </div>
 
-      <!-- Month View -->
-      <div class="row" v-if="currentView === 'Month View'" :key="'month'">
+      <!-- Month/Year View -->
+      <div class="row" v-if="currentView === 'Month View' || currentView === 'Year View'">
         <div class="col-md-2">
-            <app-list :contains="'Species'" :items="speciesNames" ></app-list>
+            <app-list :contains="'Species'" :items="speciesNames"
+                      :current-view="currentView" 
+                      :selected-item="selectedSpecies"></app-list>
         </div>
-
-        <div class="col-lg-10">
-          <app-month-container :monthNest="monthNest"></app-month-container>
+        <!-- Month Container-->
+        <transition name="fade-up" mode="out-in" appear>
+        <div class="col-lg-10" v-if="currentView === 'Month View'">
+          <app-month-container :monthNest="monthNest" 
+                               :selected-species="selectedSpecies"></app-month-container>
         </div>
-      </div>
-
-      <!-- Yearly View -->
-      <div class="row" v-if="currentView === 'Year View'" :key="'year'">
-        <div class="col-md-2">
-            <app-list :contains="'Species'" :items="speciesNames" 
-            :current-view="currentView"></app-list>
+        <!-- Year Container -->
+        <div class="col-lg-10" v-if="currentView === 'Year View'">
+          <app-year-container :dataNest="dataNest" 
+                              :selected-species="selectedSpecies"></app-year-container>
         </div>
-
-        <div class="col-lg-10">
-          <app-year-container :dataNest="dataNest"></app-year-container>
-        </div>
+        </transition>
       </div>
     </transition>
     </div>
@@ -82,7 +81,8 @@
           allBirds: null,
           testBirds: null,
           rawPredictions: null,
-          currentView: "Main View"
+          currentView: "Main View",
+          selectedSpecies: ""
         };
     }, 
     mounted: async function() {
@@ -221,7 +221,17 @@
 
       speciesEventBus.$on('viewChanged', (view) => {
         this.currentView = view;
+        if(view === "Main View")
+          this.selectedSpecies = '';
       })
+
+      speciesEventBus.$on('itemWasSelected', (species) => {
+        this.selectedSpecies = species.value;
+      })
+
+      speciesEventBus.$on('itemWasDeselected', () => {
+          this.selectedSpecies = '';
+      });
     },
     methods: {
       toggleView() {

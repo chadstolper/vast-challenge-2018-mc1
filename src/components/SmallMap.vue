@@ -1,6 +1,6 @@
 <template>
-  <div id="monthMap" :class="{faded : empty}">
-    <h6>{{ month.key }}<span style="font-size : 12px"> ({{ numRecords }} record<span v-if="numRecords != 1">s</span>)</span></h6>
+  <div id="smallMap" :class="{faded : empty}">
+    <h6>{{ timeUnit.key }}<span style="font-size : 12px"> ({{ numRecords }} record<span v-if="numRecords != 1">s</span>)</span></h6>
     <l-map ref="map" :minZoom="minZoom" :crs="crs" >
       <l-image-overlay :url="src" :bounds="bounds"></l-image-overlay>
     </l-map>
@@ -12,9 +12,9 @@
   import 'leaflet.heat';
 
   export default {
-    name: 'MonthMap',
+    name: 'SmallMap',
     props: {
-      month: Object
+      timeUnit: Object
     },
     data() {
       return {
@@ -67,7 +67,7 @@
     },
     watch: {
       // Resets entire map when deselecting a species from the list
-      month() {
+      timeUnit() {
         this.drawHeatmap();
       }
     },
@@ -80,11 +80,11 @@
          this.numRecords = 0;
        }
 
-        if(this.month.value != null) {
+        if(this.timeUnit.value != null) {
         var vm = this; // Needed because using 'this' in forEach refers to recording
 
-        // Extract each recording location from the given month of data
-        this.month.value.values.forEach(function(recording) {
+        // Extract each recording location from the given month or year of data
+        this.timeUnit.value.values.forEach(function(recording) {
           vm.heatmapData.push([(recording.Y * 0.87) - 87, (recording.X * 0.87) - 87])
           vm.numRecords++; // Increment numRecords
         });
@@ -106,7 +106,7 @@
 </script>
 
 <style scoped>
-  #monthMap {
+  #smallMap {
     width: 174px;
     height: 174px;
     margin: 5px 20px 5px 20px;
