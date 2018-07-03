@@ -43,14 +43,16 @@
         // Use sweetalret2
         this.$swal({
           title: 'About',
-          width: 600,
+          width: 640,
           imageUrl: '/data/logo.png',
-          imageWidth: 100,
-          imageHeight: 100,
+          imageHeight: 85,
+          showCloseButton: true,
+          focusConfirm: false,
+          // backdrop: 'rgba(206, 225, 255, 0.45)',
           html: `Audio Explorer is a data visualization tool 
           that helps researchers analyze location specific audio recordings 
           over time and verify their authenticity.
-          <br><br>
+          <br>
           This web app is part of our submission for the 
           <a href="http://www.vacommunity.org/VAST+Challenge+2018+MC1" target="_blank">2018 VAST Challenge. </a>
           <hr>
@@ -59,13 +61,18 @@
           and dumping waste material in the northeast region of the nearby wildlife preserve. 
           Ornithologists say this has directly led to a decrease in the population of the local
           Rose-crested Blue Pipit. Kasios refrutes this claim and has provided 15 audio files that they say are of
-          recently recorded Pipits from the Preserve and therefore 
+          recently recorded Pipits from the Preserve which proves they did not harm the species.
+          Provided a large set of recorded bird calls with accurate identifications it is our goal to 
+          check the validity of Kasios’ claim, as well as characterize the patterns of 
+          all species in the preserve over time.           
           `,
           confirmButtonText: 'First-time user?',
-          showCancelButton: true,
-          cancelButtonText: 'Close',
-          footer: `Special thanks to Dr. Stolper and the 
-          <a href="https://www.southwestern.edu/scope/" target="_blank"><p> SCOPE program </p></a> at Southwestern University`,
+          footer: `<p>Created by Colin Scruggs and Cameron Henkel 
+          <a href="https://github.com/chadstolper/vast-challenge-2018-mc1" target="_blank">
+          <img width="16" src="/data/icons/GitHub-Mark-32px.png" alt="">Visit our GitHub</a>
+          </br>
+          Special thanks to Dr. Stolper and the
+          <a href="https://www.southwestern.edu/scope/" target="_blank"> SCOPE program </a>at Southwestern University</p>`,
         })
         .then((result) => {
           if (result.value) {
