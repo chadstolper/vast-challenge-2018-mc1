@@ -90,8 +90,8 @@
     padding: 4px;
   }
 
-  .list-group {
+  /* .list-group {
     overflow-y: auto;
     max-height: 100vh;
-  }
+  } */
 </style>

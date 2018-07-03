@@ -20,10 +20,9 @@
             <app-map-container :kasiosLocations="kasiosLocations" :dataNest="dataNest"></app-map-container>
           </div>
 
-          <div class="col-md-4">
+          <div class="col-md-4" id="audioContainer">
             <app-audio-container :contains="'Kasios'" :representative-data="kasiosLocations"></app-audio-container>
             <app-audio-container :contains="'Species'" :representativeData="representativeSpecies"></app-audio-container>
-            <img src="/data/icons/about.png" alt="About this project" class="float-right" @click="aboutPage">
           </div>
       </div>
 
@@ -233,45 +232,6 @@
         else // If the Month interface is currently displayed
           this.currentView = "Audio"; // toggle to the Audio interface
       },
-      aboutPage() {
-        console.log("CLICKED")
-        // Use sweetalret2
-        this.$swal({
-          title: 'About',
-          width: 600,
-          imageUrl: '/data/logo.png',
-          imageWidth: 100,
-          imageHeight: 100,
-          html: `Audio Explorer is a data visualization tool 
-          that helps researchers analyze location specific audio recordings 
-          over time and verify their authenticity.
-          <br><br>
-          This web app is part of our submission for the 
-          <a href="http://www.vacommunity.org/VAST+Challenge+2018+MC1" target="_blank">2018 VAST Challenge. </a>
-          <hr>
-          <i>The Challenge:</i>
-          Kasios Furniture stands accused of using a banned substance in their factory
-          and dumping waste material in the northeast region of the nearby wildlife preserve. 
-          Ornithologists say this has directly led to a decrease in the population of the local
-          Rose-crested Blue Pipit. Kasios refrutes this claim and has provided 15 audio files that they say are of
-          recently recorded Pipits from the Preserve and therefore 
-          `,
-          confirmButtonText: 'First-time user?',
-          showCancelButton: true,
-          cancelButtonText: 'Close',
-          footer: `Special thanks to Dr. Stolper and the 
-          <a href="https://www.southwestern.edu/scope/" target="_blank"><p> SCOPE program </p></a> at Southwestern University`,
-        })
-        .then((result) => {
-          if (result.value) {
-            this.$swal({
-              title: 'Tutorial',
-              text: 'How to use the different components of Audio Explorer',
-              showConfirmButton: false,
-            })
-          }
-        })
-      }
     }
   }
 </script>
@@ -303,12 +263,20 @@
   /*=== Leaflet transitions and css animations ===*/
 
   .fade-up-enter-active, .fade-up-leave-active {
-    transition: all 1s;
+    transition: all 0.8s;
     animation-delay: 0s;
   }
   .fade-up-enter, .fade-up-leave-to /* .list-leave-active below version 2.1.8 */ {
     opacity: 0;
     transform: translate3d(0, 15px, 0);
+  }
+  .fade-up-fast-enter-active, .fade-up-fast-leave-active {
+    transition: all 0.5s;
+    animation-delay: 0s;
+  }
+  .fade-up-fast-enter, .fade-up-fast-leave-to /* .list-leave-active below version 2.1.8 */ {
+    opacity: 0;
+    transform: translate3d(0, 10px, 0);
   }
   .fade-down-enter-active, .fade-down-leave-active {
     transition: all 0.7s;
@@ -318,7 +286,7 @@
     transform: translate3d(0, -100%, 0);
   }
   /*=== Scrollbar css for longer audio files ===*/
-  #audioContainer #a ::-webkit-scrollbar {
+  #audioContainer ::-webkit-scrollbar {
     height: 4px;
   }
 

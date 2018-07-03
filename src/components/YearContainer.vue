@@ -1,6 +1,6 @@
 <template>
     <div id="yearContainer">
-        <transition name="fade-up" mode="out-in" appear>
+        <transition name="fade-up-fast" mode="out-in" appear>
         <h4 v-if="selectedSpecies === ''">Please select a species</h4>
         <div>
           <transition-group name="grid" tag="app-month-map">
