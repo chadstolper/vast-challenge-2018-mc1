@@ -240,6 +240,7 @@
 
   #app {
     font-family: 'Nunito', Helvetica, Arial, sans-serif;
+    font-weight: 400, 700;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     color: #2c3e50;
