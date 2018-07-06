@@ -10,7 +10,10 @@ This single-page web app was developed as part of our submission to [Mini-Challe
 1) Characterize patterns of all bird species found in the Boonsong Lekagal Wildlife Preserve over time, and   
 2) Determine whether or not the set of bird calls provided by the Kasios Furniture company supports their claim that the Rose-Crested Blue Pipit is "happily living and nesting in the Preserve."  
 
-Audio Explorer was built to synthesize the results of our machine-learning experiments and assist us in examining the geospatial data associated with the large dataset of bird calls provided by the Preserve's ornithologists. 
+Audio Explorer was built to synthesize the results of our machine-learning experiments and assist us in examining the geospatial data associated with the large dataset of bird calls provided in Mini-Challenge 1. 
+
+For a closer look at how we tackled machine learning, `Bird Classification.ipynb` is included.  
+*(NOTE: the mini-challenge audio data is required to run this Jupyterlab notebook, and is available for download from the links above)*
 
 ## Live Demo
 
@@ -67,7 +70,7 @@ The web app can then be viewed at http://localhost:8080/
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
+This project is licensed under the Apache License 2.0 - see the [LICENSE.md](LICENSE.md) file for details.
 
 ## Acknowledgments
 
