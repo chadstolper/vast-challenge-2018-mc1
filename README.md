@@ -17,7 +17,7 @@ For a closer look at how we tackled machine learning, `Bird Classification.ipynb
 
 ## Live Demo
 
-A live demo of Audio Explorer can be found [here]().
+A live demo of Audio Explorer can be found [here](https://chadstolper.github.io/vast-challenge-2018-mc1/).
 
 ## Getting Started
 
