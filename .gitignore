@@ -1,5 +1,7 @@
 .DS_Store
 node_modules/
+public/data/all-birds-wav/
+public/data/test-birds-from-kasios-cleaned/
 dist/
 npm-debug.log
 yarn-error.log
