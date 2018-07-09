@@ -99,8 +99,21 @@
     padding: 4px;
   }
 
-  /* .list-group {
-    overflow-y: auto;
-    max-height: 100vh;
-  } */
+  @media (max-width: 1285px) {
+    #listTitle {
+      font-size: 16px;
+    }
+    #check {
+      font-size: 10px;
+    }
+  }
+
+  @media (max-width: 1152px) {
+    #listTitle {
+      font-size: 14px;
+    }
+    #check {
+      font-size: 8px;
+    }
+  }
 </style>

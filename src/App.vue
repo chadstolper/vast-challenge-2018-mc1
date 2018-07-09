@@ -8,11 +8,11 @@
     <!-- Main View -->
     <transition name="fade-up" mode="out-in" appear>
       <div class="row" v-if="currentView === 'Main View'" :key="'main'">
-        <div class="col-md-1">
+        <div class="col-sm-1">
             <app-list :contains="'Kasios'" :items="kasiosFileNames" :selected="''"></app-list>
         </div>
 
-        <div class="col-md-2">
+        <div class="col-sm-2">
             <app-list :contains="'Species'" :items="speciesNames" :selected="selectedSpecies"></app-list>
         </div>
 
@@ -29,19 +29,19 @@
 
       <!-- Month/Year View -->
       <div class="row" v-if="currentView === 'Month View' || currentView === 'Year View'">
-        <div class="col-md-2">
+        <div class="col-sm-2">
             <app-list :contains="'Species'" :items="speciesNames"
                       :current-view="currentView" 
                       :selected="selectedSpecies"></app-list>
         </div>
         <!-- Month Container-->
         <transition name="fade-up" mode="out-in" appear>
-        <div class="col-lg-10" v-if="currentView === 'Month View'">
+        <div class="col-sm-10" v-if="currentView === 'Month View'">
           <app-month-container :monthNest="monthNest" 
                                :selected="selectedSpecies"></app-month-container>
         </div>
         <!-- Year Container -->
-        <div class="col-lg-10" v-if="currentView === 'Year View'">
+        <div class="col-sm-10" v-if="currentView === 'Year View'">
           <app-year-container :dataNest="dataNest" 
                               :selected="selectedSpecies"></app-year-container>
         </div>
@@ -130,7 +130,8 @@
             return d.Species
           })
           .key(function (d) {
-            return d.Year
+            if(d.Year != "00")
+              return d.Year
           }).sortKeys(d3.ascending)
           .entries(this.allBirds)
         

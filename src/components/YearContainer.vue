@@ -47,7 +47,6 @@
         this.speciesData = null;
       });
       speciesEventBus.$on('toggleEmpty', (value) => {
-        console.log(value);
         this.includeBlankYears = !this.includeBlankYears;
       });
 
@@ -72,7 +71,7 @@
         if(this.speciesData != undefined) {
           var years = [];
           this.speciesData.values.forEach(function(year) {
-            if(year.key != "00")
+            if(year.key != "undefined")
               years.push(year.key);
           });
           this.availableYears = years;

@@ -5,7 +5,7 @@
       {faded: isA==='Species' && !isPrediction && kasiosSelected}]"
       @click="selectItem">
       {{ value }}
-      <transition name="slide-fade">
+      <transition name="slide-fade" mode="out-in">
       <span v-if="isPrediction" class="badge badge-pill badge-dark"
             :style="{'background-color' : bgColor}">{{ predictionValue }}</span>
       <span v-if="isUnknown" class="badge badge-pill badge-warning" 
@@ -122,7 +122,6 @@
         if(prediction.unknown === true) {
           if(prediction.ID === this.value)
           this.isUnknown = true;
-          console.log(this);
         } else {
           this.isUnkown = false;
         }
@@ -180,5 +179,17 @@
   /* .slide-fade-leave-active below version 2.1.8 */ {
     transform: translateX(5px);
     opacity: 0;
+  }
+
+  @media (max-width: 1285px) {
+    .list-group-item {
+      font-size: 14px;
+    }
+  }
+
+  @media (max-width: 1152px) {
+    .list-group-item {
+      font-size: 11px;
+    }
   }
 </style>
