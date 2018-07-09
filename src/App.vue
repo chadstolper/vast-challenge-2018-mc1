@@ -21,7 +21,7 @@
                                :selected-species="selectedSpecies"></app-map-container>
           </div>
 
-          <div class="col-md-4" id="audioContainer">
+          <div class="col-md-4 flex-fixed-width-item" id="audioContainer">
             <app-audio-container :contains="'Kasios'" :representative-data="kasiosLocations"></app-audio-container>
             <app-audio-container :contains="'Species'" :representativeData="representativeSpecies"></app-audio-container>
           </div>
@@ -247,6 +247,9 @@
     color: #2c3e50;
     height: 100vh;
     /* overflow: hidden; */
+  }
+  .flex-fixed-width-item {
+    flex: 0 0 506.39px;
   }
 
   .leaflet-bottom {

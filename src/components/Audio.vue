@@ -71,36 +71,39 @@
         // Passes Vue instance to callback functions
         var vmWave = this;
 
-        if(this.contains=="Species"){
-          this.getSpeciesMetadata();
-        }
-        else{
-          this.getKasiosMetadata();
-        }
-        
-        // Load in and draw waveform
-        this.waveSurferInstance.load(
-          this.baseDirectory + this.audioFile + '.mp3',
-          );
-        
-        // When audio is playing set current time
-        this.waveSurferInstance.on('audioprocess', function () {
-          vmWave.playPauseSymbol = 'media-pause'
-          vmWave.currentTime = new Date(Math.round(
-            vmWave.waveSurferInstance.getCurrentTime()) * 1000).toISOString().substr(14, 5);
-        });
-        
-        // Reset playback icon when audio clip finishes
-        this.waveSurferInstance.on('finish', function () {
-          vmWave.playPauseSymbol = 'media-play'
-        });
+        if (this.audioFile!==null){
+          
+          if(this.contains=="Species"){
+            this.getSpeciesMetadata();
+          }
+          else{
+            this.getKasiosMetadata();
+          }
+          
+          // Load in and draw waveform
+          this.waveSurferInstance.load(
+            this.baseDirectory + this.audioFile + '.mp3',
+            );
+          
+          // When audio is playing set current time
+          this.waveSurferInstance.on('audioprocess', function () {
+            vmWave.playPauseSymbol = 'media-pause'
+            vmWave.currentTime = new Date(Math.round(
+              vmWave.waveSurferInstance.getCurrentTime()) * 1000).toISOString().substr(14, 5);
+          });
+          
+          // Reset playback icon when audio clip finishes
+          this.waveSurferInstance.on('finish', function () {
+            vmWave.playPauseSymbol = 'media-play'
+          });
 
-        // Set total duration
-        this.waveSurferInstance.on('ready', function () {
-          // Update total audio length when file is loaded
-          vmWave.audioLength = new Date(Math.round(
-            vmWave.waveSurferInstance.getDuration()) * 1000).toISOString().substr(14, 5);
-        });
+          // Set total duration
+          this.waveSurferInstance.on('ready', function () {
+            // Update total audio length when file is loaded
+            vmWave.audioLength = new Date(Math.round(
+              vmWave.waveSurferInstance.getDuration()) * 1000).toISOString().substr(14, 5);
+          });
+        }
       },
     },
     created () {
@@ -173,14 +176,6 @@
         ") <b>Time Recorded:</b> " + rawMetadata.Time + " - " + rawMetadata.Date +
         "<br><b>File ID:</b> " + rawMetadata['File ID'] + " <b>Quality:</b> " + rawMetadata.Quality + 
         " <b>Vocalization Type:</b> " + rawMetadata.Vocalization_type
-        
-        // this.audioMetaData = "X: " + rawMetadata.X + 
-        // " Y: " + rawMetadata.Y + 
-        // " Date: " + rawMetadata.Date + 
-        // " File ID: " + rawMetadata['File ID'] +
-        // " Vocalization type: " + rawMetadata.Vocalization_type +
-        // " Quality: " + rawMetadata.Quality +
-        // " Time: " + rawMetadata.Time
       },
       getKasiosMetadata() {
         var rawMetadata = this.representativeData.filter(d => d.name == this.audioFile)[0]
