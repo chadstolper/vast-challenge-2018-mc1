@@ -43,7 +43,7 @@
         // Use sweetalret2
         this.$swal({
           title: 'About',
-          width: 640,
+          width: 660,
           imageUrl: '/data/logo.png',
           imageHeight: 85,
           showCloseButton: true,
@@ -60,16 +60,15 @@
           Kasios Furniture stands accused of using a banned substance in their factory
           and dumping waste material in the northeast region of the nearby wildlife preserve. 
           Ornithologists say this has directly led to a decrease in the population of the local
-          Rose-crested Blue Pipit. Kasios refrutes this claim and has provided 15 audio files that they say are of
-          recently recorded Pipits from the Preserve which proves they did not harm the species.
-          Provided a large set of recorded bird calls with accurate identifications it is our goal to 
-          check the validity of Kasios’ claim, as well as characterize the patterns of 
-          all species in the preserve over time.           
+          Rose-crested Blue Pipit. Kasios refutes this claim and has supplied 15 audio files recorded 
+          across the Preserve that they insist are evidence that the Rose-Crested Blue Pipit population is fine.
+          Provided with a large set of recorded bird calls with accurate identifications, it is our goal to 
+          check the validity of Kasios’ claims, as well as characterize the patterns of all species in the preserve over time.           
           `,
           confirmButtonText: 'First-time user?',
-          footer: `<p>Created by Colin Scruggs and Cameron Henkel 
+          footer: `<p>Created by Colin Scruggs and Cameron Henkel      
           <a href="https://github.com/chadstolper/vast-challenge-2018-mc1" target="_blank">
-          <img width="16" src="/data/icons/GitHub-Mark-32px.png" alt="">Visit our GitHub</a>
+          <img width="16" src="/data/icons/GitHub-Mark-32px.png" alt="">   Visit our GitHub</a>
           </br>
           Special thanks to Dr. Stolper and the
           <a href="https://www.southwestern.edu/scope/" target="_blank"> SCOPE program </a>at Southwestern University</p>`,
