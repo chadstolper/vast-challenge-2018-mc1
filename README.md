@@ -2,7 +2,7 @@
 # Audio Explorer 
 
 
-Audio Explorer is a data visualization tool created by Colin Scruggs and Cameron Henkel of Southwestern University for the [2018 VAST Challenge](http://www.vacommunity.org/VAST+Challenge+2018).  
+Audio Explorer is a data visualization tool created by Colin Scruggs and Cameron Henkel of Southwestern University for the [2018 VAST Challenge](http://www.vacommunity.org/VAST+Challenge+2018). Audio Explorer was the recipient of the "Excellent Comprehensive Submission" Award from the VAST committee for 2018's Mini Challenge 1.
 
 ![logo](public/data/logo_github.png)
 
